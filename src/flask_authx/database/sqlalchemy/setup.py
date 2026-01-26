@@ -1,0 +1,52 @@
+from typing import cast
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+
+from flask_authx.domain.errors import (
+    AppError,
+    DatabaseError,
+    NotFoundError,
+    ConfigurationError,
+)
+from flask_authx.domain.forms import UserForm
+from flask_authx.domain.value_objects import Role
+from flask_authx.interfaces.database import IDatabaseSetup
+from flask_authx.database.sqlalchemy.models import UserModel, SessionModel  # noqa
+from flask_authx.config import config
+from flask_authx.container import container as cont
+
+
+class SQLAlchemyDatabaseSetup(IDatabaseSetup):
+    def __init__(self, app: Flask) -> None:
+        self.app = app
+        self.sqlalchemy = cast(SQLAlchemy, cont.fk_sqlalchemy)
+        self.users_repository = cont.users_repository
+
+    def init(self) -> None:
+        with self.app.app_context():
+            if not cont.fk_migrate:
+                self.sqlalchemy.create_all()
+
+            res = self.users_repository.get_by_name(config.SUPERUSER_NAME)
+
+            if not res.success:
+                if res.error_is(NotFoundError):
+                    superuser = UserForm(
+                        username=config.SUPERUSER_NAME,
+                        password=config.SUPERUSER_PASSWORD,
+                        role=Role.admin,
+                    )
+                    valid_res = superuser.is_valid()
+
+                    if not valid_res.success:
+                        raise ConfigurationError(
+                            "The entered credentials for the superuser are not valid."
+                        )
+
+                    self.users_repository.add(superuser)
+
+                elif res.error_is(DatabaseError):
+                    raise DatabaseError(res.error.message)
+
+                else:
+                    raise AppError(f"Unexpected error: {res.error}")
