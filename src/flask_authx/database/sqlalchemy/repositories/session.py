@@ -7,8 +7,8 @@ from flask_authx.domain.errors import (
     ValidationError,
 )
 from flask_authx.database.sqlalchemy.models import SessionModel
-from flask_authx.database.sqlalchemy.shared import (
-    get_sqlalchemy,
+from flask_authx.database.sqlalchemy.shared.instance import instance
+from flask_authx.database.sqlalchemy.shared.errors import (
     handle_database_error,
     handle_integrity_error,
 )
@@ -16,13 +16,10 @@ from flask_authx.interfaces.repository import ISessionsRepository
 from flask_authx.utils.result import Result
 
 
-db_session = get_sqlalchemy().session
-
-
 class SQLAlchemySessionsRepository(ISessionsRepository):
     @handle_database_error
     def all(self) -> Result[list[Session], DatabaseError]:
-        sessions = db_session.query(SessionModel).all()
+        sessions = instance.session.query(SessionModel).all()
 
         return Result.ok([s.to_entity() for s in sessions])
 
@@ -30,7 +27,7 @@ class SQLAlchemySessionsRepository(ISessionsRepository):
     def get_by_token(
         self, token: str
     ) -> Result[Session, NotFoundError | DatabaseError]:
-        sess = db_session.get(SessionModel, token)
+        sess = instance.session.get(SessionModel, token)
 
         if not sess:
             return Result.fail(NotFoundError("Invalid access token"))
@@ -42,7 +39,7 @@ class SQLAlchemySessionsRepository(ISessionsRepository):
         self, user_id: int
     ) -> Result[Session, NotFoundError | DatabaseError]:
         sess = (
-            db_session.query(SessionModel)
+            instance.session.query(SessionModel)
             .filter(SessionModel.user_id == user_id)
             .one_or_none()
         )
@@ -61,20 +58,20 @@ class SQLAlchemySessionsRepository(ISessionsRepository):
     ) -> Result[Session, ConflictError | ValidationError | DatabaseError]:
         model = SessionModel.create(new)
 
-        db_session.add(model)
-        db_session.commit()
+        instance.session.add(model)
+        instance.session.commit()
 
         return Result.ok(model.to_entity())
 
     @handle_database_error
     def remove(self, token: str) -> Result[None, NotFoundError | DatabaseError]:
-        model = db_session.get(SessionModel, token)
+        model = instance.session.get(SessionModel, token)
 
         if not model:
             return Result.fail(NotFoundError("Invalid session token."))
 
-        db_session.delete(model)
-        db_session.commit()
+        instance.session.delete(model)
+        instance.session.commit()
 
         return Result.ok(None)
 
@@ -83,7 +80,7 @@ class SQLAlchemySessionsRepository(ISessionsRepository):
         self, user_id: int
     ) -> Result[None, NotFoundError | DatabaseError]:
         model = (
-            db_session.query(SessionModel)
+            instance.session.query(SessionModel)
             .filter(SessionModel.user_id == user_id)
             .one_or_none()
         )
@@ -91,7 +88,7 @@ class SQLAlchemySessionsRepository(ISessionsRepository):
         if not model:
             return Result.fail(NotFoundError("User doesn't have an active session."))
 
-        db_session.delete(model)
-        db_session.commit()
+        instance.session.delete(model)
+        instance.session.commit()
 
         return Result.ok(None)

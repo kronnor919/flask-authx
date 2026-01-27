@@ -1,6 +1,3 @@
-from typing import cast
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
 import sqlalchemy.exc as sae
 
 from flask_authx.domain.errors import (
@@ -10,23 +7,12 @@ from flask_authx.domain.errors import (
     ValidationError,
 )
 from flask_authx.utils.result import Result
-from flask_authx.container import container
-
-
-def get_sqlalchemy():
-    return cast(SQLAlchemy, container.fk_sqlalchemy)
-
-
-def ensure_sqlalchemy(app: Flask):
-    if not app.extensions.get("sqlalchemy"):
-        raise RuntimeError(
-            "App must have initialized 'SQLAlchemy' instance, from `Flask-SQLAlchemy` extension. Or define your own database configuration via `AuthXBuilder`."
-        )
+from .instance import instance
 
 
 def handle_database_error(f):
     def wrapper(*args, **kwargs):
-        db_session = get_sqlalchemy().session
+        db_session = instance.session
         try:
             return f(*args, **kwargs)
 
@@ -43,7 +29,7 @@ def handle_database_error(f):
 
 def handle_integrity_error(f):
     def wrapper(*args, **kwargs):
-        db_session = get_sqlalchemy().session
+        db_session = instance.session
         try:
             return f(*args, **kwargs)
 
