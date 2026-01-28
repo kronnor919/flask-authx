@@ -14,7 +14,6 @@ from flask_authx.routes.users import UsersRoutes
 from flask_authx.routes.auth import AuthRoutes
 from flask_authx.security.passwords import BcryptPasswordHashing
 from flask_authx.services.auth import AuthService
-from flask_authx.container import container
 
 
 class AuthX:
@@ -49,12 +48,10 @@ class AuthX:
 
         self.password_hashing = self.password_hashing or BcryptPasswordHashing()
 
-        if not all(
-            [
-                self.users_repository,
-                self.database_setup,
-                self.sessions_repository,
-            ]
+        if (
+            not self.database_setup
+            or not self.users_repository
+            or not self.sessions_repository
         ):
             set_sqlalchemy(app)
 
@@ -70,11 +67,6 @@ class AuthX:
             self.database_setup = SQLAlchemyDatabaseSetup(app, self.users_repository)
             self.sessions_repository = SQLAlchemySessionsRepository()
 
-        self.database_setup = self.database_setup or container.database_setup
-        self.users_repository = self.users_repository or container.users_repository
-        self.sessions_repository = (
-            self.sessions_repository or container.sessions_repository
-        )
         self.auth_service = self.auth_service or AuthService(
             self.sessions_repository, self.users_repository, self.password_hashing
         )
