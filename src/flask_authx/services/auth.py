@@ -7,18 +7,23 @@ from flask_authx.domain.errors import (
     NotAuthenticatedError,
     NotFoundError,
 )
+from flask_authx.interfaces.repository import ISessionsRepository, IUsersRepository
 from flask_authx.interfaces.service import IAuthService
+from flask_authx.interfaces.security import IPasswordHashing
 from flask_authx.security.tokens import generate_access_token
 from flask_authx.utils.result import Result
-from flask_authx.container import container
 
 
 class AuthService(IAuthService):
     def __init__(
         self,
+        sessions_repository: ISessionsRepository,
+        users_repository: IUsersRepository,
+        password_hashing: IPasswordHashing,
     ) -> None:
-        self.sessions_db = container.sessions_repository
-        self.users_db = container.users_repository
+        self.sessions_db = sessions_repository
+        self.users_db = users_repository
+        self.password_hashing = password_hashing
 
     def login(
         self, u: UserForm
@@ -33,7 +38,7 @@ class AuthService(IAuthService):
 
         user = user_res.value  # Contains hashed password
 
-        if not container.password_hashing.verify(u.password, user.password):
+        if not self.password_hashing.verify(u.password, user.password):
             return Result.fail(InvalidCredentialsError("Invalid credentials"))
 
         upd_auth_res = self.users_db.update(user.id, {"is_authenticated": True})
