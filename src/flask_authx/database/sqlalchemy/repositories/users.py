@@ -15,10 +15,15 @@ from flask_authx.database.sqlalchemy.shared.errors import (
     handle_integrity_error,
 )
 from flask_authx.interfaces.repository import IUsersRepository
+from flask_authx.interfaces.security import IPasswordHashing
 from flask_authx.utils.result import Result
 
 
 class SQLAlchemyUsersRepository(IUsersRepository):
+    def __init__(self, password_hashing: IPasswordHashing) -> None:
+        super().__init__()
+        self.password_hashing = password_hashing
+
     @handle_database_error
     def all(self) -> Result[list[User], DatabaseError]:
         models = instance.session.query(UserModel).all()

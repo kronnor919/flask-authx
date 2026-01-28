@@ -47,6 +47,8 @@ class AuthX:
 
         app.extensions["authx"] = self
 
+        self.password_hashing = self.password_hashing or BcryptPasswordHashing()
+
         if not all(
             [
                 self.users_repository,
@@ -64,7 +66,9 @@ class AuthX:
             )
             from flask_authx.database.sqlalchemy.setup import SQLAlchemyDatabaseSetup
 
-            container.users_repository = SQLAlchemyUsersRepository()
+            container.users_repository = SQLAlchemyUsersRepository(
+                self.password_hashing
+            )
             container.database_setup = SQLAlchemyDatabaseSetup(
                 app, container.users_repository
             )

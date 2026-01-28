@@ -14,7 +14,6 @@ from flask_authx.database.sqlalchemy.shared.instance import instance
 from flask_authx.domain.entities import Session, User
 from flask_authx.domain.forms import SessionForm, UserForm
 from flask_authx.domain.value_objects import Role
-from flask_authx.container import container
 
 
 class UserModel(instance.Model):
@@ -43,7 +42,8 @@ class UserModel(instance.Model):
     def create(u: UserForm) -> "UserModel":
         return UserModel(
             username=u.username,  # type: ignore
-            password_hash=container.password_hashing.hash(u.password),  # type: ignore
+            # Thats assumes what password is already hashed
+            password_hash=u.password,  # type: ignore
             role=u.role,  # type: ignore
             is_authenticated=False,  # type: ignore
         )
