@@ -82,10 +82,15 @@ class AuthX:
         self.database_setup.init()
 
         UsersRoutes(
-            self.users_routes_prefix,
+            self.users_repository,
+            self.sessions_repository,
+            prefix=self.users_routes_prefix,
             app=app,
         )
+
         AuthRoutes(
+            self.auth_service,
+            self.sessions_repository,
             prefix=self.auth_routes_prefix,
             app=app,
         )

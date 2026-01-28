@@ -10,6 +10,7 @@ from flask_authx.domain.errors import (
     NotFoundError,
     ValidationError,
 )
+from flask_authx.interfaces.repository import ISessionsRepository, IUsersRepository
 from flask_authx.security.auth import require_authentication
 from flask_authx.utils.request import json_fields
 from flask_authx.utils.responses import (
@@ -24,17 +25,19 @@ from flask_authx.utils.responses import (
     UsernameConflictResponse,
     UsersListResponse,
 )
-from flask_authx.container import container
 
 
 class UsersRoutes:
     def __init__(
         self,
+        users_repository: IUsersRepository,
+        sessions_repository: ISessionsRepository,
+        *,
         prefix: str,
         app: Optional[Flask] = None,
     ) -> None:
-        self.repository = container.users_repository
-        self.sessions_repository = container.sessions_repository
+        self.repository = users_repository
+        self.sessions_repository = sessions_repository
 
         self._users_bp = Blueprint("users", __name__, url_prefix=prefix)
         self._require_authentication = require_authentication(self.sessions_repository)
