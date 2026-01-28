@@ -66,23 +66,20 @@ class AuthX:
             )
             from flask_authx.database.sqlalchemy.setup import SQLAlchemyDatabaseSetup
 
-            container.users_repository = SQLAlchemyUsersRepository(
-                self.password_hashing
-            )
-            container.database_setup = SQLAlchemyDatabaseSetup(
-                app, container.users_repository
-            )
-            container.sessions_repository = SQLAlchemySessionsRepository()
+            self.users_repository = SQLAlchemyUsersRepository(self.password_hashing)
+            self.database_setup = SQLAlchemyDatabaseSetup(app, self.users_repository)
+            self.sessions_repository = SQLAlchemySessionsRepository()
 
-        container.database_setup = self.database_setup or container.database_setup
-        container.users_repository = self.users_repository or container.users_repository
-        container.sessions_repository = (
+        self.database_setup = self.database_setup or container.database_setup
+        self.users_repository = self.users_repository or container.users_repository
+        self.sessions_repository = (
             self.sessions_repository or container.sessions_repository
         )
-        container.auth_service = self.auth_service or AuthService()
-        container.password_hashing = self.password_hashing or BcryptPasswordHashing()
+        self.auth_service = self.auth_service or AuthService(
+            self.sessions_repository, self.users_repository, self.password_hashing
+        )
 
-        container.database_setup.init()
+        self.database_setup.init()
 
         UsersRoutes(
             self.users_routes_prefix,
