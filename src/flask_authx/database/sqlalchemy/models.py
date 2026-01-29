@@ -10,17 +10,13 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import relationship
 
-from flask_authx.database.sqlalchemy.shared import get_sqlalchemy
+from flask_authx.database.sqlalchemy.shared.instance import instance
 from flask_authx.domain.entities import Session, User
 from flask_authx.domain.forms import SessionForm, UserForm
 from flask_authx.domain.value_objects import Role
-from flask_authx.container import container
 
 
-sa = get_sqlalchemy()
-
-
-class UserModel(sa.Model):
+class UserModel(instance.Model):
     __tablename__ = "Users"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
@@ -46,13 +42,14 @@ class UserModel(sa.Model):
     def create(u: UserForm) -> "UserModel":
         return UserModel(
             username=u.username,  # type: ignore
-            password_hash=container.password_hashing.hash(u.password),  # type: ignore
+            # Thats assumes what password is already hashed
+            password_hash=u.password,  # type: ignore
             role=u.role,  # type: ignore
             is_authenticated=False,  # type: ignore
         )
 
 
-class SessionModel(sa.Model):
+class SessionModel(instance.Model):
     __tablename__ = "Sessions"
 
     token = Column(String, primary_key=True, nullable=False)

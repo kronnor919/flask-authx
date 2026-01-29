@@ -9,6 +9,8 @@ from flask_authx.domain.errors import (
     InvalidCredentialsError,
     NotAuthenticatedError,
 )
+from flask_authx.interfaces.repository import ISessionsRepository
+from flask_authx.interfaces.service import IAuthService
 from flask_authx.security.auth import require_authentication
 from flask_authx.utils.request import json_fields
 from flask_authx.utils.responses import (
@@ -19,17 +21,19 @@ from flask_authx.utils.responses import (
     SuccessfulEmptyResponse,
     SuccessfulLoginResponse,
 )
-from flask_authx.container import container
 
 
 class AuthRoutes:
     def __init__(
         self,
+        auth_service: IAuthService,
+        sessions_repository: ISessionsRepository,
+        *,
         prefix: str,
         app: Optional[Flask] = None,
     ) -> None:
-        self.auth_svc = container.auth_service
-        self.sessions_repository = container.sessions_repository
+        self.auth_svc = auth_service
+        self.sessions_repository = sessions_repository
 
         self._auth_bp = Blueprint("auth", __name__, url_prefix=prefix)
         self._require_authentication = require_authentication(self.sessions_repository)

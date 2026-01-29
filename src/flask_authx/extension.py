@@ -1,10 +1,10 @@
 import os
-from typing import Optional, cast
-
+from typing import Optional
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
 
-from flask_authx.database.sqlalchemy.shared import ensure_sqlalchemy
+from flask_authx.database.sqlalchemy.shared.instance import (
+    set_sqlalchemy,
+)
 from flask_authx.domain.errors import ConfigurationError, ProgrammingError
 from flask_authx.interfaces.database import IDatabaseSetup
 from flask_authx.interfaces.repository import ISessionsRepository, IUsersRepository
@@ -14,7 +14,6 @@ from flask_authx.routes.users import UsersRoutes
 from flask_authx.routes.auth import AuthRoutes
 from flask_authx.security.passwords import BcryptPasswordHashing
 from flask_authx.services.auth import AuthService
-from flask_authx.container import container
 
 
 class AuthX:
@@ -36,7 +35,6 @@ class AuthX:
 
     def init_app(self, app: Flask):
         authx: Optional[AuthX] = app.extensions.get("authx")
-        sqlalchemy_ext = app.extensions.get("sqlalchemy")
 
         if authx:
             raise RuntimeError(
@@ -48,14 +46,14 @@ class AuthX:
 
         app.extensions["authx"] = self
 
-        if not all([
-            self.users_repository,
-            self.database_setup,
-            self.sessions_repository,
-        ]):
-            ensure_sqlalchemy(app)
+        self.password_hashing = self.password_hashing or BcryptPasswordHashing()
 
-            container.fk_sqlalchemy = cast(SQLAlchemy, sqlalchemy_ext)
+        if (
+            not self.database_setup
+            or not self.users_repository
+            or not self.sessions_repository
+        ):
+            set_sqlalchemy(app)
 
             from flask_authx.database.sqlalchemy.repositories.session import (
                 SQLAlchemySessionsRepository,
@@ -65,25 +63,26 @@ class AuthX:
             )
             from flask_authx.database.sqlalchemy.setup import SQLAlchemyDatabaseSetup
 
-            container.users_repository = SQLAlchemyUsersRepository()
-            container.database_setup = SQLAlchemyDatabaseSetup(app)
-            container.sessions_repository = SQLAlchemySessionsRepository()
+            self.users_repository = SQLAlchemyUsersRepository(self.password_hashing)
+            self.database_setup = SQLAlchemyDatabaseSetup(app, self.users_repository)
+            self.sessions_repository = SQLAlchemySessionsRepository()
 
-        container.database_setup = self.database_setup or container.database_setup
-        container.users_repository = self.users_repository or container.users_repository
-        container.sessions_repository = (
-            self.sessions_repository or container.sessions_repository
+        self.auth_service = self.auth_service or AuthService(
+            self.sessions_repository, self.users_repository, self.password_hashing
         )
-        container.auth_service = self.auth_service or AuthService()
-        container.password_hashing = self.password_hashing or BcryptPasswordHashing()
 
-        container.database_setup.init()
+        self.database_setup.init()
 
         UsersRoutes(
-            self.users_routes_prefix,
+            self.users_repository,
+            self.sessions_repository,
+            prefix=self.users_routes_prefix,
             app=app,
         )
+
         AuthRoutes(
+            self.auth_service,
+            self.sessions_repository,
             prefix=self.auth_routes_prefix,
             app=app,
         )

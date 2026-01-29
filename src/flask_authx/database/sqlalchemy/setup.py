@@ -1,4 +1,3 @@
-from typing import cast
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
@@ -11,20 +10,20 @@ from flask_authx.domain.errors import (
 from flask_authx.domain.forms import UserForm
 from flask_authx.domain.value_objects import Role
 from flask_authx.interfaces.database import IDatabaseSetup
+from flask_authx.interfaces.repository import IUsersRepository
 from flask_authx.database.sqlalchemy.models import UserModel, SessionModel  # noqa
 from flask_authx.config import config
-from flask_authx.container import container as cont
 
 
 class SQLAlchemyDatabaseSetup(IDatabaseSetup):
-    def __init__(self, app: Flask) -> None:
+    def __init__(self, app: Flask, users_repository: IUsersRepository) -> None:
         self.app = app
-        self.sqlalchemy = cast(SQLAlchemy, cont.fk_sqlalchemy)
-        self.users_repository = cont.users_repository
+        self.sqlalchemy: SQLAlchemy = app.extensions["sqlalchemy"]
+        self.users_repository = users_repository
 
     def init(self) -> None:
         with self.app.app_context():
-            if not cont.fk_migrate:
+            if not self.app.extensions.get("migrate"):
                 self.sqlalchemy.create_all()
 
             res = self.users_repository.get_by_name(config.SUPERUSER_NAME)
