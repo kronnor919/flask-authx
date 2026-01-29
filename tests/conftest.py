@@ -3,7 +3,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
 
-@fixture
+@fixture(scope="session")
 def app():
     app = Flask(__name__)
 
