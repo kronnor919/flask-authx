@@ -59,7 +59,10 @@ class SQLAlchemyUsersRepository(IUsersRepository):
     def add(
         self, new: UserForm
     ) -> Result[User, ConflictError | ValidationError | DatabaseError]:
-        model = UserModel.create(new)
+        user = UserForm(
+            new.username, self.password_hashing.hash(new.password), new.role
+        )
+        model = UserModel.create(user)
 
         instance.session.add(model)
         instance.session.commit()
