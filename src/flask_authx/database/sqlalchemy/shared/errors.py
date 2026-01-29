@@ -1,6 +1,6 @@
 import sqlalchemy.exc as sae
 
-from flask_authx.domain.errors import (
+from flask_authx.errors import (
     ProgrammingError,
     DatabaseError,
     ConflictError,

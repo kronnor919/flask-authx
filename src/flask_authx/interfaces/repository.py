@@ -1,9 +1,9 @@
 from abc import ABC, abstractmethod
 from typing import Any
 
-from flask_authx.domain.entities import Session, User
-from flask_authx.domain.forms import SessionForm, UserForm
-from flask_authx.domain.errors import (
+from flask_authx.entities import Session, User
+from flask_authx.forms import SessionForm, UserForm
+from flask_authx.errors import (
     ConflictError,
     DatabaseError,
     NotFoundError,

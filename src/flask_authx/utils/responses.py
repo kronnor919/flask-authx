@@ -3,7 +3,7 @@ from typing import Optional
 
 from flask import make_response
 
-from flask_authx.domain.entities import Session, User
+from flask_authx.entities import Session, User
 
 
 class UserNotFoundResponse:
@@ -32,16 +32,18 @@ class InternalErrorResponse:
 class UserInfoResponse:
     @staticmethod
     def create(user: User):
-        res = make_response({
-            "success": True,
-            "user": {
-                "id": user.id,
-                "username": user.username,
-                "role": user.role.dump(),
-                "is_authenticated": user.is_authenticated,
-                "created_at": user.created_at.isoformat(),
-            },
-        })
+        res = make_response(
+            {
+                "success": True,
+                "user": {
+                    "id": user.id,
+                    "username": user.username,
+                    "role": user.role.dump(),
+                    "is_authenticated": user.is_authenticated,
+                    "created_at": user.created_at.isoformat(),
+                },
+            }
+        )
         res.status_code = HTTPStatus.OK
         return res
 
@@ -49,13 +51,15 @@ class UserInfoResponse:
 class UsersListResponse:
     @staticmethod
     def create(users: list[User]):
-        res = make_response({
-            "success": True,
-            "users": [
-                {"id": u.id, "username": u.username, "role": u.role.dump()}
-                for u in users
-            ],
-        })
+        res = make_response(
+            {
+                "success": True,
+                "users": [
+                    {"id": u.id, "username": u.username, "role": u.role.dump()}
+                    for u in users
+                ],
+            }
+        )
         res.status_code = HTTPStatus.OK
         return res
 
@@ -71,10 +75,12 @@ class SuccessfulEmptyResponse:
 class JSONRequiredResponse:
     @staticmethod
     def create():
-        res = make_response({
-            "success": False,
-            "error": "MimeType must be 'application/json'",
-        })
+        res = make_response(
+            {
+                "success": False,
+                "error": "MimeType must be 'application/json'",
+            }
+        )
         res.status_code = HTTPStatus.UNSUPPORTED_MEDIA_TYPE
         return res
 
@@ -82,10 +88,12 @@ class JSONRequiredResponse:
 class MissingJsonFieldsResponse:
     @staticmethod
     def create(*fields: str):
-        res = make_response({
-            "success": False,
-            "error": f"Missing fields in JSON body: {', '.join([f"'{f}'" for f in fields])}",
-        })
+        res = make_response(
+            {
+                "success": False,
+                "error": f"Missing fields in JSON body: {', '.join([f"'{f}'" for f in fields])}",
+            }
+        )
         res.status_code = HTTPStatus.BAD_REQUEST
         return res
 
@@ -110,10 +118,12 @@ class BadRequestFormatResponse:
 class UsernameConflictResponse:
     @staticmethod
     def create():
-        res = make_response({
-            "success": False,
-            "error": "That username is already taken.",
-        })
+        res = make_response(
+            {
+                "success": False,
+                "error": "That username is already taken.",
+            }
+        )
         res.status_code = HTTPStatus.CONFLICT
         return res
 
@@ -121,10 +131,12 @@ class UsernameConflictResponse:
 class UserFormValidationErrorResponse:
     @staticmethod
     def create(message: Optional[str] = None):
-        res = make_response({
-            "success": False,
-            "error": message or "Invalid credentials.",
-        })
+        res = make_response(
+            {
+                "success": False,
+                "error": message or "Invalid credentials.",
+            }
+        )
         res.status_code = HTTPStatus.BAD_REQUEST
         return res
 
@@ -132,10 +144,12 @@ class UserFormValidationErrorResponse:
 class RequireAuthenticationResponse:
     @staticmethod
     def create():
-        res = make_response({
-            "success": False,
-            "error": "The requested action requires authentication.",
-        })
+        res = make_response(
+            {
+                "success": False,
+                "error": "The requested action requires authentication.",
+            }
+        )
         res.status_code = HTTPStatus.UNAUTHORIZED
         return res
 
@@ -143,10 +157,12 @@ class RequireAuthenticationResponse:
 class MissingQueryParamsResponse:
     @staticmethod
     def create(*fields: str):
-        res = make_response({
-            "success": False,
-            "error": f"Missing params in query string: {', '.join([f"'{f}'" for f in fields])}",
-        })
+        res = make_response(
+            {
+                "success": False,
+                "error": f"Missing params in query string: {', '.join([f"'{f}'" for f in fields])}",
+            }
+        )
         res.status_code = HTTPStatus.BAD_REQUEST
         return res
 
@@ -154,10 +170,12 @@ class MissingQueryParamsResponse:
 class PermissionErrorResponse:
     @staticmethod
     def create():
-        res = make_response({
-            "success": False,
-            "error": "Your account doesn't have the required permission to proceed with the requested action.",
-        })
+        res = make_response(
+            {
+                "success": False,
+                "error": "Your account doesn't have the required permission to proceed with the requested action.",
+            }
+        )
         res.status_code = HTTPStatus.FORBIDDEN
         return res
 
@@ -165,10 +183,12 @@ class PermissionErrorResponse:
 class InvalidCredentialsResponse:
     @staticmethod
     def create():
-        res = make_response({
-            "success": False,
-            "error": "Invalid username or password.",
-        })
+        res = make_response(
+            {
+                "success": False,
+                "error": "Invalid username or password.",
+            }
+        )
         res.status_code = HTTPStatus.UNAUTHORIZED
         return res
 
@@ -176,10 +196,12 @@ class InvalidCredentialsResponse:
 class SessionAlreadyOpenResponse:
     @staticmethod
     def create():
-        res = make_response({
-            "success": False,
-            "error": "Session already open on another device. Please log out from there first.",
-        })
+        res = make_response(
+            {
+                "success": False,
+                "error": "Session already open on another device. Please log out from there first.",
+            }
+        )
         res.status_code = HTTPStatus.UNAUTHORIZED
         return res
 

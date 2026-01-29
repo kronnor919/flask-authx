@@ -1,8 +1,8 @@
 from typing import cast
 
-from flask_authx.domain.entities import User
-from flask_authx.domain.forms import UserForm
-from flask_authx.domain.errors import (
+from flask_authx.entities import User
+from flask_authx.forms import UserForm
+from flask_authx.errors import (
     DatabaseError,
     NotFoundError,
     ConflictError,

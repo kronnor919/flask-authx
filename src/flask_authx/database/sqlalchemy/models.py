@@ -11,9 +11,9 @@ from sqlalchemy import (
 from sqlalchemy.orm import relationship
 
 from flask_authx.database.sqlalchemy.shared.instance import instance
-from flask_authx.domain.entities import Session, User
-from flask_authx.domain.forms import SessionForm, UserForm
-from flask_authx.domain.value_objects import Role
+from flask_authx.entities import Session, User
+from flask_authx.forms import SessionForm, UserForm
+from flask_authx.role import Role
 
 
 class UserModel(instance.Model):

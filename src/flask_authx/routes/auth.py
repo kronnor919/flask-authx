@@ -1,10 +1,10 @@
 from typing import Optional
 from flask import Blueprint, Flask
 
-from flask_authx.domain.entities import User
-from flask_authx.domain.forms import UserForm
-from flask_authx.domain.value_objects import Role
-from flask_authx.domain.errors import (
+from flask_authx.entities import User
+from flask_authx.forms import UserForm
+from flask_authx.role import Role
+from flask_authx.errors import (
     ConflictError,
     InvalidCredentialsError,
     NotAuthenticatedError,
