@@ -217,7 +217,7 @@ class BlehPasswordHashing(IPasswordHashing):
         return password + self.HASH_SUFFIX # Puedes usar una libreria como bcrypt
     
     def verify(self, password: str, hashed: str) -> bool:
-        return password == hashed[:len(self.HASH_SUFFIX)]
+        return password == hashed[:-len(self.HASH_SUFFIX)]
     
     # Este codigo es claramente INSEGURO para hashing.
     # Solo es para mantener simplicidad.
