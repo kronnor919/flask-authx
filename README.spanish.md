@@ -1,26 +1,26 @@
-# Flask-AuthX
+## 🔐 Flask-AuthX
 
-Flask-AuthX proporciona un sistema completo de gestión de sesiones de usuarios, con autenticación, hashing de contraseñas, base de datos pre-configurada y crea automáticamente los endpoints listos para ser usados por un cliente.
+Flask-AuthX proporciona un sistema completo de gestión de sesiones de usuarios, con autenticación, hashing de contraseñas, base de datos pre-configurada y crea automáticamente los endpoints listos para ser usados por un cliente. 🚀
 
-Y no, no es un boilerplate. No estás obligado a usar exactamente el mismo sistema que yo te imponga en esta herramienta, puedes extender y modificar a tu gusto cada componente, yo solo te ofrezco una solución rápida si estás haciendo un MVP (literalmente solo requiere 6 líneas de código extender tu app [Flask](https://flask.palletsprojects.com) y te ahorras casi mil líneas).
+Y no, no es un boilerplate. No estás obligado a usar exactamente el mismo sistema que yo te imponga en esta herramienta, puedes extender y modificar a tu gusto cada componente, yo solo te ofrezco una solución rápida si estás haciendo un MVP (literalmente solo requiere 6 líneas de código extender tu app Flask y te ahorras casi mil líneas). ⚡
 
-## Advertencias
+## ⚠️ Advertencias
 
-Este proyecto está actualemente en un estado inestable, ***NO*** se debe usar para otro objetivo que no sea testear funcionalidades, no uses esta extensión en una app que vayas a desplegar.
+Este proyecto está actualemente en un estado inestable, ***NO*** se debe usar para otro objetivo que no sea testear funcionalidades, no uses esta extensión en una app que vayas a desplegar. 🚧
 
-Esta mini-documentación puede estar desvinculada del estado real del proyecto (adelantada a las funcionalidades o retrasada). También pueden faltar funcionalidades o ciertos aspectos pueden no quedar claros. De cualquier modo, todas sus opiniones e ideas son bienvenidas.
+Esta mini-documentación puede estar desvinculada del estado real del proyecto (adelantada a las funcionalidades o retrasada). También pueden faltar funcionalidades o ciertos aspectos pueden no quedar claros. De cualquier modo, todas sus opiniones e ideas son bienvenidas. 📝
 
-No soy un desarrollador experimentado, estoy aprendiendo, y este es mi principal proyecto actual, planeo escalarlo y crear una herramienta de verdad pero recuerden que esto es un proyecto de aprendizaje.
+No soy un desarrollador experimentado, estoy aprendiendo, y este es mi principal proyecto actual, planeo escalarlo y crear una herramienta de verdad pero recuerden que esto es un proyecto de aprendizaje. 🌱
 
-## Funcionalidades
+## ✨ Funcionalidades
 
-- Autenticación y gestión de usuarios.
-- Seguridad de los datos.
-- Autorización basada en roles.
-- Cada detalle fundamental de la lógica es ajustable a tus propias necesidades.
-- Sistema completo implementado por defecto compatible con cualquier motor de base de datos con [SQLAlchemy](https://docs.sqlalchemy.org).
+- 🔐 Autenticación y gestión de usuarios.
+- 🛡️ Seguridad de los datos.
+- 👥 Autorización basada en roles.
+- 🛠️ Cada detalle fundamental de la lógica es ajustable a tus propias necesidades.
+- 🗄️ Sistema completo implementado por defecto compatible con cualquier motor de base de datos con SQLAlchemy.
 
-## Uso básico
+## 🚀 Uso básico
 
 ```py
 # ./app.py
@@ -46,7 +46,7 @@ def create_app() -> Flask:
     return app
 ```
 
-Si intentas correr el servidor mediante `flask run` verás que funciona sin problemas, pero ¿Qué ha hecho Flask-AuthX en este punto?
+Si intentas correr el servidor mediante `flask run` verás que funciona sin problemas, pero ¿Qué ha hecho Flask-AuthX en este punto? 🤔
 
 Si tumbas el servidor (`Ctrl + C`) y ejecutas `flask routes` verás que la salida será algo como:
 
@@ -63,11 +63,11 @@ users.get_by_username  GET      /users/<string:username>
 users.post             POST     /users
 ```
 
-Esto indica que nuestra extensión, efectivamente ha extendido tu aplicación Flask con nuevas funcionalidades.
+Esto indica que nuestra extensión, efectivamente ha extendido tu aplicación Flask con nuevas funcionalidades. ✅
 
 Incluso si volviéramos a activar el servidor y en el navegador colocamos la siguiente url: `http://localhost:5000/users`.
 
-Te debería cargar una página del debuger de [Werkzeug](https://werkzeug.palletsprojects.com) mostrándote los siguientes datos:
+Te debería cargar una página del debuger de Werkzeug mostrándote los siguientes datos:
 
 ```json
 {
@@ -82,17 +82,17 @@ Te debería cargar una página del debuger de [Werkzeug](https://werkzeug.pallet
 }
 ```
 
-Que es el usuario que hemos configurado rápidamente en el primer ejemplo de uso.
+Que es el usuario que hemos configurado rápidamente en el primer ejemplo de uso. 👤
 
-Ahora que pasa si tu no quieres depender de [Flask-SQLAlchemy](https://flask-sqlalchemy.readthedocs.io) en tu aplicación, pues no te obligamos a usarlo, sencillo.
+Ahora que pasa si tu no quieres depender de Flask-SQLAlchemy en tu aplicación, pues no te obligamos a usarlo, sencillo. 🎯
 
-## Personalizando tu extensiòn
+## 🛠️ Personalizando funcionalidades
 
-Con Flask-AuthX tienes el poder de configurar la base de datos que quieras, con el ORM que quieras, con el motor que quieras.
+Con Flask-AuthX tienes el poder de configurar la base de datos que quieras, con el ORM que quieras, con el motor que quieras. 💪
 
-Como te habrás dado cuenta en el primer ejemplo usamos una clase llamada `AuthXBuilder` para activar la extensión, pues esta clase contiene métodos que te ayudan a modificar la forma en la que Flask-AuthX hace las cosas.
+Como te habrás dado cuenta en el primer ejemplo usamos una clase llamada `AuthXBuilder` para activar la extensión, pues esta clase contiene métodos que te ayudan a modificar la lógica con la que trabaja Flask-AuthX.
 
-### Ejemplo (Acceso a datos)
+### 📊 Ejemplo (Acceso a datos)
 
 Quieres hacer tu propia implementación de gestión de usuarios usando la libreria `sqlite3` de python (se que no tiene mucho sentido pero es por simplicidad). Pues debes usar un conjunto de interfaces que ofrece la extensión que ayudan a que tu sistema se acople perfectamente a lo que la extensión espera que haga.
 
@@ -156,11 +156,11 @@ def create_app() -> Flask:
     return app
 ```
 
-El problema de modificar los componentes de base de datos es que cambiar 1 de estos 3 requiere cambiar los 3, aún así la extensión se encarga de que tú no tengas que tocar nada relacionado a los endpoints para que estos cambios se apliquen y las reglas de validación relacionadas a los usuariosse cumplan.
+El problema de modificar los componentes de base de datos es que cambiar 1 de estos 3 requiere cambiar los 3, aún así la extensión se encarga de que tú no tengas que tocar nada relacionado a los endpoints para que estos cambios se apliquen y las reglas de validación relacionadas a los usuariosse cumplan. 🔄
 
-Pero... ¿Qué reglas? Tú no has definido ninguna de las reglas de validación en este punto, lo hice la extensión, y quizá tú no estés de acuerdo con las reglas que definí, pues déjame decirte que también son perfectamente modificables siguiendo la misma filosofía de heredar de clases y sobreescribir métodos.
+Pero... ¿Qué reglas? Tú no has definido ninguna de las reglas de validación en este punto, lo hice la extensión, y quizá tú no estés de acuerdo con las reglas que definí, pues déjame decirte que también son perfectamente modificables siguiendo la misma filosofía de heredar de clases y sobreescribir métodos. 📋
 
-### Ejemplo (Entidades / reglas de validación)
+### 🧪 Ejemplo (Entidades / reglas de validación)
 
 ```py
 import string
@@ -201,9 +201,9 @@ def create_app() -> Flask:
     return app
 ```
 
-Con estos cambios la extensión se encargará de que cada regla (métodos `validate_*`) se apliquen antes de realizar cualquier operación sobre una entidad en la base de datos.
+Con esta configuración la extensión se encargará de que cada regla (métodos `validate_*`) se apliquen antes de realizar cualquier operación sobre una entidad en la base de datos. ✅
 
-### Ejemplo (Seguridad de contraseñas)
+### 🔑 Ejemplo (Seguridad de contraseñas)
 
 Para controlar el hasheo de las contraseñas existe la interfaz `IPasswordHashing` y un método del builder que nos permite hacer lo que querramos con esta lógica.
 
@@ -234,6 +234,6 @@ def create_app():
     return app
 ```
 
-## Licencia
+## 📄 Licencia
 
-MIT: Libre distribución mientras que no sea comercial. Ver [LICENSE](./LICENSE)
+MIT: Libre distribución mientras que no sea comercial. Ver [LICENSE 📜](./LICENSE)
