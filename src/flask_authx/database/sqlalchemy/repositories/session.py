@@ -1,6 +1,6 @@
-from flask_authx.domain.forms import SessionForm
-from flask_authx.domain.entities import Session
-from flask_authx.domain.errors import (
+from flask_authx.forms import SessionForm
+from flask_authx.entities import Session
+from flask_authx.errors import (
     ConflictError,
     DatabaseError,
     NotFoundError,

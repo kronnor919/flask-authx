@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 
-from flask_authx.domain.entities import User
-from flask_authx.domain.errors import ValidationError
-from flask_authx.domain.value_objects import Role
+from flask_authx.entities import User
+from flask_authx.errors import ValidationError
+from flask_authx.role import Role
 from flask_authx.utils.result import Result
 
 

@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from flask_authx.domain.errors import ProgrammingError
+from flask_authx.errors import ProgrammingError
 
 
 @dataclass

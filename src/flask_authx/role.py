@@ -1,6 +1,6 @@
 from enum import Enum
 
-from flask_authx.domain.errors import ProgrammingError
+from flask_authx.errors import ProgrammingError
 
 
 class Role(Enum):

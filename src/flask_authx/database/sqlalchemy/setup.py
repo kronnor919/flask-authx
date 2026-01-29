@@ -1,14 +1,14 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
-from flask_authx.domain.errors import (
+from flask_authx.errors import (
     AppError,
     DatabaseError,
     NotFoundError,
     ConfigurationError,
 )
-from flask_authx.domain.forms import UserForm
-from flask_authx.domain.value_objects import Role
+from flask_authx.forms import UserForm
+from flask_authx.role import Role
 from flask_authx.interfaces.database import IDatabaseSetup
 from flask_authx.interfaces.repository import IUsersRepository
 from flask_authx.database.sqlalchemy.models import UserModel, SessionModel  # noqa

@@ -1,5 +1,5 @@
 from flask import Config
-from flask_authx.domain.errors import ConfigurationError
+from flask_authx.errors import ConfigurationError
 
 
 FIRST_USER_NAME: str

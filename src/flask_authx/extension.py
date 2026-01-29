@@ -1,18 +1,17 @@
-import os
 from typing import Optional
 from flask import Flask
 
 from flask_authx.database.sqlalchemy.shared.instance import (
     set_sqlalchemy,
 )
-from flask_authx.domain.errors import ConfigurationError, ProgrammingError
+from flask_authx.errors import ProgrammingError
 from flask_authx.interfaces.database import IDatabaseSetup
 from flask_authx.interfaces.repository import ISessionsRepository, IUsersRepository
 from flask_authx.interfaces.security import IPasswordHashing
 from flask_authx.interfaces.service import IAuthService
 from flask_authx.routes.users import UsersRoutes
 from flask_authx.routes.auth import AuthRoutes
-from flask_authx.security.passwords import BcryptPasswordHashing
+from flask_authx.services.password_hashing import BcryptPasswordHashing
 from flask_authx.services.auth import AuthService
 from flask_authx.config import load_config
 
