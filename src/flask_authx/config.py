@@ -1,23 +1,17 @@
-from pydantic_settings import BaseSettings, SettingsConfigDict
-from pydantic import ValidationError
-
+from flask import Config
 from flask_authx.domain.errors import ConfigurationError
 
 
-class Config(BaseSettings):
-    model_config = SettingsConfigDict(
-        env_file=".env", env_file_encoding="utf-8", extra="allow"
-    )
-
-    SUPERUSER_NAME: str
-    SUPERUSER_PASSWORD: str
+FIRST_USER_NAME: str
+FIRST_USER_PASSWORD: str
 
 
-try:
-    config = Config()  # pyright: ignore[reportCallIssue]
+def load_config(app_config: Config):
+    global FIRST_USER_NAME, FIRST_USER_PASSWORD
 
-except ValidationError as ex:
-    errors = ex.errors(include_context=False, include_url=False)
-    msg = f"Missing fields in environment file: {', '.join([str(e['loc'][0]) for e in errors])}"
+    try:
+        FIRST_USER_NAME = app_config["FIRST_USER_NAME"]
+        FIRST_USER_PASSWORD = app_config["FIRST_USER_PASSWORD"]
 
-    raise ConfigurationError(msg)
+    except KeyError as field:
+        raise ConfigurationError(f"Missing field in app config: {field}")

@@ -14,6 +14,7 @@ from flask_authx.routes.users import UsersRoutes
 from flask_authx.routes.auth import AuthRoutes
 from flask_authx.security.passwords import BcryptPasswordHashing
 from flask_authx.services.auth import AuthService
+from flask_authx.config import load_config
 
 
 class AuthX:
@@ -41,10 +42,9 @@ class AuthX:
                 "A 'AuthX' instance has been detected in this app, use that instead (with app['authx'])."
             )
 
-        if not os.path.exists(os.path.join(".", ".env")):
-            raise ConfigurationError("Environment file required in root directory.")
-
         app.extensions["authx"] = self
+
+        load_config(app.config)
 
         self.password_hashing = self.password_hashing or BcryptPasswordHashing()
 
