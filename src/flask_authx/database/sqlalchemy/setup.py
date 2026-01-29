@@ -12,7 +12,7 @@ from flask_authx.domain.value_objects import Role
 from flask_authx.interfaces.database import IDatabaseSetup
 from flask_authx.interfaces.repository import IUsersRepository
 from flask_authx.database.sqlalchemy.models import UserModel, SessionModel  # noqa
-from flask_authx.config import config
+from flask_authx.config import FIRST_USER_NAME, FIRST_USER_PASSWORD
 
 
 class SQLAlchemyDatabaseSetup(IDatabaseSetup):
@@ -26,23 +26,23 @@ class SQLAlchemyDatabaseSetup(IDatabaseSetup):
             if not self.app.extensions.get("migrate"):
                 self.sqlalchemy.create_all()
 
-            res = self.users_repository.get_by_name(config.SUPERUSER_NAME)
+            res = self.users_repository.get_by_name(FIRST_USER_NAME)
 
             if not res.success:
                 if res.error_is(NotFoundError):
-                    superuser = UserForm(
-                        username=config.SUPERUSER_NAME,
-                        password=config.SUPERUSER_PASSWORD,
+                    first_user = UserForm(
+                        username=FIRST_USER_NAME,
+                        password=FIRST_USER_PASSWORD,
                         role=Role.admin,
                     )
-                    valid_res = superuser.is_valid()
+                    valid_res = first_user.is_valid()
 
                     if not valid_res.success:
                         raise ConfigurationError(
-                            "The entered credentials for the superuser are not valid."
+                            "The entered credentials for the first admin are not valid."
                         )
 
-                    self.users_repository.add(superuser)
+                    self.users_repository.add(first_user)
 
                 elif res.error_is(DatabaseError):
                     raise DatabaseError(res.error.message)
