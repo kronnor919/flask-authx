@@ -4,6 +4,8 @@ Flask-AuthX provides a complete user session management system, with authenticat
 
 And no, it’s not a boilerplate. You're not forced to use exactly the same system I impose in this tool—you can extend and modify every component as you like. I’m just offering a quick solution if you're building an MVP (literally takes only 6 lines of code to extend your Flask app, saving you almost a thousand lines).
 
+A spanish version of this file is available in [README.spanish.md](./README.spanish.md)
+
 ## Warnings
 
 This project is currently in an unstable state. ***DO NOT*** use it for anything other than testing features. Do not use this extension in an app you plan to deploy.
@@ -21,6 +23,7 @@ I’m not an experienced developer—I'm learning, and this is my main project r
 - A complete default system compatible with any database engine via SQLAlchemy.
 
 ## Basic Usage
+
 ```py
 
 # ./app.py
@@ -158,6 +161,7 @@ The problem with modifying database components is that changing one of these thr
 But… what rules? You haven’t defined any validation rules at this point—I did, the extension did. And maybe you don’t agree with the rules I defined. Well, let me tell you they’re also fully customizable following the same philosophy of inheriting from classes and overriding methods.
 
 ## Example (Entities / Validation Rules)
+
 ```py
 import string
 from flask import Flask
