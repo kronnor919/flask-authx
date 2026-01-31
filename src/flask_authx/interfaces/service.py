@@ -1,12 +1,15 @@
 from abc import ABC, abstractmethod
 
 from flask_authx.entities import Session, User
+from flask_authx.role import Role
 from flask_authx.forms import UserForm
 from flask_authx.errors import (
     ConflictError,
     InvalidCredentialsError,
     NotAuthenticatedError,
     DatabaseError,
+    NotFoundError,
+    ValidationError,
 )
 from flask_authx.utils.result import Result
 
@@ -23,4 +26,56 @@ class IAuthService(ABC):
 
     @abstractmethod
     def logout(self, user: User) -> Result[None, NotAuthenticatedError | DatabaseError]:
+        pass
+
+
+class IUsersService(ABC):
+    @abstractmethod
+    def all(self) -> Result[list[User], DatabaseError]:
+        pass
+
+    @abstractmethod
+    def get_by_id(self, id: int) -> Result[User, NotFoundError | DatabaseError]:
+        pass
+
+    @abstractmethod
+    def get_by_name(self, username: str) -> Result[User, NotFoundError | DatabaseError]:
+        pass
+
+    @abstractmethod
+    def add(
+        self, form: UserForm
+    ) -> Result[User, ConflictError | ValidationError | DatabaseError]:
+        pass
+
+    @abstractmethod
+    def remove(self, id: int) -> Result[None, NotFoundError | DatabaseError]:
+        pass
+
+    @abstractmethod
+    def update_name(
+        self, id: int, new_username: str
+    ) -> Result[User, NotFoundError | ConflictError | DatabaseError]:
+        pass
+
+    @abstractmethod
+    def update_role(
+        self, id: int, role: Role
+    ) -> Result[User, NotFoundError | DatabaseError]:
+        pass
+
+    @abstractmethod
+    def mark_authenticated(
+        self, id: int
+    ) -> Result[User, NotFoundError | DatabaseError]:
+        pass
+
+    @abstractmethod
+    def mark_unauthenticated(
+        self, id: int
+    ) -> Result[User, NotFoundError | DatabaseError]:
+        pass
+
+    @abstractmethod
+    def is_authenticated(self, id: int) -> bool:
         pass
