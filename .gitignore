@@ -14,3 +14,6 @@ wheels/
 
 # Visual Studio Code
 .vscode/
+
+# Ignore all files with 'ignore' in their name
+*.ignore*
