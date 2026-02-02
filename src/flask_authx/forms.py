@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import TypedDict
 
 from flask_authx.entities import User
 from flask_authx.errors import ValidationError
@@ -29,3 +30,9 @@ class UserForm:
 class SessionForm:
     token: str
     user: User
+
+
+class UserUpdateData(TypedDict, total=False):
+    username: str
+    role: Role
+    is_authenticated: bool

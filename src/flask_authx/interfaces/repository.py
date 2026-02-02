@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from typing import Any
 
 from flask_authx.entities import Session, User
-from flask_authx.forms import SessionForm, UserForm
+from flask_authx.forms import SessionForm, UserForm, UserUpdateData
 from flask_authx.errors import (
     ConflictError,
     DatabaseError,
@@ -37,7 +37,7 @@ class IUsersRepository(ABC):
 
     @abstractmethod
     def update(
-        self, id: int, values: dict[str, Any]
+        self, id: int, values: UserUpdateData
     ) -> Result[User, ConflictError | ValidationError | NotFoundError | DatabaseError]:
         pass
 

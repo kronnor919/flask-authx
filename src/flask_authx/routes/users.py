@@ -10,7 +10,8 @@ from flask_authx.errors import (
     NotFoundError,
     ValidationError,
 )
-from flask_authx.interfaces.repository import ISessionsRepository, IUsersRepository
+from flask_authx.interfaces.repository import ISessionsRepository
+from flask_authx.interfaces.service import IUsersService
 from flask_authx.security.auth import require_authentication
 from flask_authx.utils.request import json_fields
 from flask_authx.utils.responses import (
@@ -30,13 +31,13 @@ from flask_authx.utils.responses import (
 class UsersRoutes:
     def __init__(
         self,
-        users_repository: IUsersRepository,
+        users_service: IUsersService,
         sessions_repository: ISessionsRepository,
         *,
         prefix: str,
         app: Optional[Flask] = None,
     ) -> None:
-        self.repository = users_repository
+        self.users_service = users_service
         self.sessions_repository = sessions_repository
 
         self._users_bp = Blueprint("users", __name__, url_prefix=prefix)
@@ -53,7 +54,7 @@ class UsersRoutes:
         @self._users_bp.route("", methods=["GET"])
         def get_all():
             # Tested
-            res = self.repository.all()
+            res = self.users_service.all()
 
             if not res.success:
                 if res.error_is(DatabaseError):
@@ -64,7 +65,7 @@ class UsersRoutes:
         @self._users_bp.route("/<int:id>", methods=["GET"])
         def get_by_id(id: int):
             # Tested
-            res = self.repository.get_by_id(id)
+            res = self.users_service.get_by_id(id)
 
             if not res.success:
                 if res.error_is(NotFoundError):
@@ -78,7 +79,7 @@ class UsersRoutes:
         @self._users_bp.route("/<string:username>", methods=["GET"])
         def get_by_username(username: str):
             # Tested
-            res = self.repository.get_by_name(username)
+            res = self.users_service.get_by_name(username)
 
             if not res.success:
                 if res.error_is(NotFoundError):
@@ -102,7 +103,7 @@ class UsersRoutes:
                 if session_res.error_is(DatabaseError):
                     return InternalErrorResponse.create(session_res.error.message)
 
-            res = self.repository.remove(id)
+            res = self.users_service.remove(id)
 
             if not res.success:
                 if res.error_is(NotFoundError):
@@ -128,7 +129,7 @@ class UsersRoutes:
             if not valid_res.success:
                 return UserFormValidationErrorResponse.create(valid_res.error.message)
 
-            res = self.repository.add(form)
+            res = self.users_service.add(form)
             user = res.value
 
             if not res.success:

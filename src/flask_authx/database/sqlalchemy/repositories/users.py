@@ -1,7 +1,5 @@
-from typing import cast
-
 from flask_authx.entities import User
-from flask_authx.forms import UserForm
+from flask_authx.forms import UserForm, UserUpdateData
 from flask_authx.errors import (
     DatabaseError,
     NotFoundError,
@@ -15,14 +13,18 @@ from flask_authx.database.sqlalchemy.shared.errors import (
     handle_integrity_error,
 )
 from flask_authx.interfaces.repository import IUsersRepository
-from flask_authx.interfaces.security import IPasswordHashing
 from flask_authx.utils.result import Result
 
 
 class SQLAlchemyUsersRepository(IUsersRepository):
-    def __init__(self, password_hashing: IPasswordHashing) -> None:
+    COLUMN_MAPPER = {
+        "username": "username",
+        "is_authenticated": "is_authenticated",
+        "role": "role",
+    }
+
+    def __init__(self) -> None:
         super().__init__()
-        self.password_hashing = password_hashing
 
     @handle_database_error
     def all(self) -> Result[list[User], DatabaseError]:
@@ -59,10 +61,7 @@ class SQLAlchemyUsersRepository(IUsersRepository):
     def add(
         self, new: UserForm
     ) -> Result[User, ConflictError | ValidationError | DatabaseError]:
-        user = UserForm(
-            new.username, self.password_hashing.hash(new.password), new.role
-        )
-        model = UserModel.create(user)
+        model = UserModel.create(new)
 
         instance.session.add(model)
         instance.session.commit()
@@ -84,16 +83,17 @@ class SQLAlchemyUsersRepository(IUsersRepository):
     @handle_database_error
     @handle_integrity_error
     def update(
-        self, id: int, values: dict
+        self, id: int, values: UserUpdateData
     ) -> Result[User, ConflictError | ValidationError | NotFoundError | DatabaseError]:
-        rows = (
-            instance.session.query(UserModel).filter(UserModel.id == id).update(values)
-        )
-        instance.session.commit()
-
-        if rows == 0:
-            return Result.fail(NotFoundError(f"User with id: {id} doesn't exist."))
-
         model = instance.session.get(UserModel, id)
 
-        return Result.ok(cast(UserModel, model).to_entity())
+        if not model:
+            return Result.fail(NotFoundError(f"User with id: {id} not found."))
+
+        for k, v in values.items():
+            if k in self.COLUMN_MAPPER:
+                setattr(model, self.COLUMN_MAPPER[k], v)
+
+        instance.session.commit()
+
+        return Result.ok(model.to_entity())

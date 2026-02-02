@@ -26,7 +26,12 @@ class UserModel(instance.Model):
     role = Column(Enum(Role), nullable=False)
     created_at = Column(DateTime, default=datetime.now)
 
-    session = relationship("SessionModel", uselist=False, back_populates="user")
+    session = relationship(
+        "SessionModel",
+        uselist=False,
+        back_populates="user",
+        cascade="all, delete-orphan",
+    )
 
     def to_entity(self) -> User:
         return User(
