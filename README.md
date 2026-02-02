@@ -12,7 +12,7 @@ This project is currently in an unstable state. ***DO NOT*** use it for anything
 
 This mini-documentation may be out of sync with the actual state of the project (ahead of features or behind). Some features may also be missing or certain aspects may not be clear. In any case, all your opinions and ideas are welcome. 📝
 
-I'm not an experienced developer—I'm learning, and this is my main project right now. I plan to scale it and turn it into a real tool, but remember this is a learning project. 🌱
+This is my main project right now. I plan to scale it and turn it into a real tool, but remember this is a learning project. 🌱
 
 ## ✨ Features
 
