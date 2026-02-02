@@ -1,25 +1,10 @@
-import pytest
 from flask import Flask
-from flask_authx import AuthXBuilder
 from flask_authx import AuthX
 from flask_authx import config
 
 
 USERNAME = "kronnor"
 PW = "73336463"
-
-
-@pytest.fixture(scope="module")
-def builded_app(app: Flask):
-    app_copy = app
-
-    app_copy.config.from_mapping(
-        {"FIRST_USER_NAME": USERNAME, "FIRST_USER_PASSWORD": PW}
-    )
-
-    AuthXBuilder(app_copy).build()
-
-    yield app_copy
 
 
 def test_init(builded_app: Flask):
