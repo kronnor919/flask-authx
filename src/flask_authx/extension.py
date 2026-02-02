@@ -14,6 +14,7 @@ from flask_authx.routes.auth import AuthRoutes
 from flask_authx.services.password_hashing import BcryptPasswordHashing
 from flask_authx.services.auth import AuthService
 from flask_authx.config import load_config
+from flask_authx.services.users import IUsersService, UsersService
 
 
 class AuthX:
@@ -29,6 +30,7 @@ class AuthX:
         self.auth_routes_prefix = builder.auth_routes_prefix
         self.users_routes_prefix = builder.users_routes_prefix
         self.password_hashing = builder.password_hashing
+        self.users_service = builder.users_service
 
         if self.app:
             self.init_app(self.app)
@@ -62,18 +64,25 @@ class AuthX:
             )
             from flask_authx.database.sqlalchemy.setup import SQLAlchemyDatabaseSetup
 
-            self.users_repository = SQLAlchemyUsersRepository(self.password_hashing)
-            self.database_setup = SQLAlchemyDatabaseSetup(app, self.users_repository)
+            self.users_repository = SQLAlchemyUsersRepository()
+            self.users_service = self.users_service or UsersService(
+                self.users_repository, self.password_hashing
+            )
+            self.database_setup = SQLAlchemyDatabaseSetup(app, self.users_service)
             self.sessions_repository = SQLAlchemySessionsRepository()
 
+        self.users_service = self.users_service or UsersService(
+            self.users_repository, self.password_hashing
+        )
+
         self.auth_service = self.auth_service or AuthService(
-            self.sessions_repository, self.users_repository, self.password_hashing
+            self.sessions_repository, self.users_service, self.password_hashing
         )
 
         self.database_setup.init()
 
         UsersRoutes(
-            self.users_repository,
+            self.users_service,
             self.sessions_repository,
             prefix=self.users_routes_prefix,
             app=app,
@@ -98,6 +107,7 @@ class AuthXBuilder:
         self.database_setup: Optional[IDatabaseSetup] = None
         self.auth_service: Optional[IAuthService] = None
         self.password_hashing: Optional[IPasswordHashing] = None
+        self.users_service: Optional[IUsersService] = None
 
     def set_users_repository(self, repository: IUsersRepository):
         self.users_repository = repository
@@ -129,6 +139,10 @@ class AuthXBuilder:
 
     def set_password_hashing(self, component: IPasswordHashing):
         self.password_hashing = component
+        return self
+
+    def set_users_service(self, component: IUsersService):
+        self.users_service = component
         return self
 
     def build(self) -> AuthX:
