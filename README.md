@@ -4,7 +4,7 @@ Flask-AuthX provides a complete user session management system, with authenticat
 
 And no, it's not a boilerplate. You're not forced to use exactly the same system I impose in this tool—you can extend and modify every component as you like. I'm just offering a quick solution if you're building an MVP (literally takes only 6 lines of code to extend your Flask app, saving you almost a thousand lines). ⚡
 
-A spanish version of this file is available in [README.spanish.md](./README.spanish.md)
+Una versión en español de este archivo está disponible en: [README.spanish.md](./README.spanish.md) (A spanish version of this file is available)
 
 ## ⚠️ Warnings
 
@@ -12,7 +12,7 @@ This project is currently in an unstable state. ***DO NOT*** use it for anything
 
 This mini-documentation may be out of sync with the actual state of the project (ahead of features or behind). Some features may also be missing or certain aspects may not be clear. In any case, all your opinions and ideas are welcome. 📝
 
-I'm not an experienced developer—I'm learning, and this is my main project right now. I plan to scale it and turn it into a real tool, but remember this is a learning project. 🌱
+This is my main project right now. I plan to scale it and turn it into a real tool, but remember this is a learning project. 🌱
 
 ## ✨ Features
 
