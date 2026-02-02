@@ -55,7 +55,7 @@ class IUsersService(ABC):
     @abstractmethod
     def update_name(
         self, id: int, new_username: str
-    ) -> Result[User, NotFoundError | ConflictError | DatabaseError]:
+    ) -> Result[User, ValidationError | NotFoundError | ConflictError | DatabaseError]:
         pass
 
     @abstractmethod
@@ -77,5 +77,5 @@ class IUsersService(ABC):
         pass
 
     @abstractmethod
-    def is_authenticated(self, id: int) -> bool:
+    def is_authenticated(self, id: int) -> Result[bool, NotFoundError | DatabaseError]:
         pass
