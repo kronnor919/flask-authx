@@ -32,4 +32,10 @@ def builded_app(app: Flask):
 
     AuthXBuilder(app).build()
 
-    yield app
+    return app
+
+
+@fixture(scope="session")
+def app_client(builded_app: Flask):
+    with builded_app.test_client() as c:
+        return c
