@@ -17,3 +17,8 @@ def ensure_sqlalchemy(app: Flask) -> SQLAlchemy:
             "App must have initialized 'SQLAlchemy' instance, from `Flask-SQLAlchemy` extension. Or define your own database configuration via `AuthXBuilder`."
         )
     return app.extensions["sqlalchemy"]
+
+
+def get_instance() -> SQLAlchemy:
+    """Get the current SQLAlchemy instance. Always returns the current value."""
+    return instance
