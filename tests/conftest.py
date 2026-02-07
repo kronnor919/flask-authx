@@ -1,41 +1,47 @@
-from pytest import fixture
+import pytest
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_authx import AuthXBuilder
 
 
-@fixture(scope="session")
+@pytest.fixture
 def app():
     app = Flask(__name__)
+    app.config["TESTING"] = True
 
-    app.config.from_mapping(
-        {
-            "SQLALCHEMY_DATABASE_URI": "sqlite:///:memory:",
-            "SQLALCHEMY_TRACK_MODIFICATIONS": False,
-            "TESTING": True,
-        }
-    )
+    return app
+
+
+@pytest.fixture
+def app_with_sqlalchemy():
+    app = Flask(__name__)
+
+    app.config["TESTING"] = True
+    app.config["FIRST_USER_NAME"] = "admin"
+    app.config["FIRST_USER_PASSWORD"] = "subliminal message"
+    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///:memory:"
 
     SQLAlchemy(app)
 
     return app
 
 
-@fixture(scope="session")
-def builded_app(app: Flask):
-    app.config.from_mapping(
-        {
-            "FIRST_USER_NAME": "kronnor",
-            "FIRST_USER_PASSWORD": "73336463",
-        }  # This values MUST BE NOT CHANGED (break the tests)
-    )
+@pytest.fixture
+def builder():
+    app = Flask(__name__)
+    app.config["TESTING"] = True
+    app.config["FIRST_USER_NAME"] = "admin"
+    app.config["FIRST_USER_PASSWORD"] = "subliminal message"
+    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///:memory:"
 
-    AuthXBuilder(app).build()
+    db = SQLAlchemy(app)
 
-    return app
+    with app.app_context():
+        import flask_authx.database.sqlalchemy.shared.instance as instance_module
+        from flask_authx.database.sqlalchemy.shared.instance import set_sqlalchemy
 
+        instance_module.instance = None
+        set_sqlalchemy(app)
 
-@fixture(scope="session")
-def app_client(builded_app: Flask):
-    with builded_app.test_client() as c:
-        return c
+    authx_builder = AuthXBuilder(app)
+    return authx_builder
