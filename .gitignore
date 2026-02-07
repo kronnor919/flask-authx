@@ -12,6 +12,10 @@ wheels/
 # Pytest cache
 .pytest_cache/
 
+# Pytest coverage reports
+htmlcov/
+*.coverage
+
 # Visual Studio Code
 .vscode/
 
