@@ -6,8 +6,8 @@ from flask_authx.errors import (
     ConflictError,
     ValidationError,
 )
-from flask_authx.database.sqlalchemy.models import UserModel
-from flask_authx.database.sqlalchemy.shared.instance import instance
+from flask_authx.database.sqlalchemy.shared.instance import get_instance
+from flask_authx.database.sqlalchemy.models import get_user_model
 from flask_authx.database.sqlalchemy.shared.errors import (
     handle_database_error,
     handle_integrity_error,
@@ -25,27 +25,26 @@ class SQLAlchemyUsersRepository(IUsersRepository):
 
     def __init__(self) -> None:
         super().__init__()
+        self.UserModel = get_user_model()
 
     @handle_database_error
     def all(self) -> Result[list[User], DatabaseError]:
-        models = instance.session.query(UserModel).all()
-
+        models = get_instance().session.query(self.UserModel).all()
         return Result.ok([m.to_entity() for m in models])
 
     @handle_database_error
     def get_by_id(self, id: int) -> Result[User, NotFoundError | DatabaseError]:
-        model = instance.session.get(UserModel, id)
-
+        model = get_instance().session.get(self.UserModel, id)
         if not model:
             return Result.fail(NotFoundError(f"User with id: {id} doesn't exist."))
-
         return Result.ok(model.to_entity())
 
     @handle_database_error
     def get_by_name(self, username: str) -> Result[User, NotFoundError | DatabaseError]:
         model = (
-            instance.session.query(UserModel)
-            .filter(UserModel.username == username)
+            get_instance()
+            .session.query(self.UserModel)
+            .filter(self.UserModel.username == username)
             .first()
         )
 
@@ -61,23 +60,18 @@ class SQLAlchemyUsersRepository(IUsersRepository):
     def add(
         self, new: UserForm
     ) -> Result[User, ConflictError | ValidationError | DatabaseError]:
-        model = UserModel.create(new)
-
-        instance.session.add(model)
-        instance.session.commit()
-
+        model = self.UserModel.create(new)
+        get_instance().session.add(model)
+        get_instance().session.commit()
         return Result.ok(model.to_entity())
 
     @handle_database_error
     def remove(self, id: int) -> Result[None, NotFoundError | DatabaseError]:
-        model = instance.session.get(UserModel, id)
-
+        model = get_instance().session.get(self.UserModel, id)
         if not model:
             return Result.fail(NotFoundError(f"User with id: {id} not found."))
-
-        instance.session.delete(model)
-        instance.session.commit()
-
+        get_instance().session.delete(model)
+        get_instance().session.commit()
         return Result.ok(None)
 
     @handle_database_error
@@ -85,8 +79,7 @@ class SQLAlchemyUsersRepository(IUsersRepository):
     def update(
         self, id: int, values: UserUpdateData
     ) -> Result[User, ConflictError | ValidationError | NotFoundError | DatabaseError]:
-        model = instance.session.get(UserModel, id)
-
+        model = get_instance().session.get(self.UserModel, id)
         if not model:
             return Result.fail(NotFoundError(f"User with id: {id} not found."))
 
@@ -94,6 +87,5 @@ class SQLAlchemyUsersRepository(IUsersRepository):
             if k in self.COLUMN_MAPPER:
                 setattr(model, self.COLUMN_MAPPER[k], v)
 
-        instance.session.commit()
-
+        get_instance().session.commit()
         return Result.ok(model.to_entity())

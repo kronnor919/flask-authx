@@ -10,62 +10,91 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import relationship
 
-from flask_authx.database.sqlalchemy.shared.instance import instance
 from flask_authx.entities import Session, User
 from flask_authx.forms import SessionForm, UserForm
 from flask_authx.role import Role
 
 
-class UserModel(instance.Model):
-    __tablename__ = "Users"
+def create_models(db):
+    """Create models dynamically using the provided SQLAlchemy instance."""
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    username = Column(String(150), nullable=False, unique=True)
-    password_hash = Column(String, nullable=False)
-    is_authenticated = Column(Boolean, nullable=False)
-    role = Column(Enum(Role), nullable=False)
-    created_at = Column(DateTime, default=datetime.now)
+    class UserModel(db.Model):
+        __tablename__ = "Users"
 
-    session = relationship(
-        "SessionModel",
-        uselist=False,
-        back_populates="user",
-        cascade="all, delete-orphan",
-    )
+        id = Column(Integer, primary_key=True, autoincrement=True)
+        username = Column(String(150), nullable=False, unique=True)
+        password_hash = Column(String, nullable=False)
+        is_authenticated = Column(Boolean, nullable=False)
+        role = Column(Enum(Role), nullable=False)
+        created_at = Column(DateTime, default=datetime.now)
 
-    def to_entity(self) -> User:
-        return User(
-            self.id,  # type: ignore
-            self.username,  # type: ignore
-            self.password_hash,  # type: ignore
-            self.role,  # type: ignore
-            self.is_authenticated,  # type: ignore
-            self.created_at,  # type: ignore
+        session = relationship(
+            "SessionModel",
+            uselist=False,
+            back_populates="user",
+            cascade="all, delete-orphan",
         )
 
-    @staticmethod
-    def create(u: UserForm) -> "UserModel":
-        return UserModel(
-            username=u.username,  # type: ignore
-            # Thats assumes what password is already hashed
-            password_hash=u.password,  # type: ignore
-            role=u.role,  # type: ignore
-            is_authenticated=False,  # type: ignore
-        )
+        def to_entity(self) -> User:
+            return User(
+                self.id,
+                self.username,
+                self.password_hash,
+                self.role,
+                self.is_authenticated,
+                self.created_at,
+            )
+
+        @staticmethod
+        def create(u: UserForm):
+            return UserModel(
+                username=u.username,
+                password_hash=u.password,
+                role=u.role,
+                is_authenticated=False,
+            )
+
+    class SessionModel(db.Model):
+        __tablename__ = "Sessions"
+
+        token = Column(String, primary_key=True, nullable=False)
+        user_id = Column(Integer, ForeignKey("Users.id"), unique=True)
+        created_at = Column(DateTime, default=datetime.now)
+
+        user = relationship(UserModel, uselist=False, back_populates="session")
+
+        def to_entity(self) -> Session:
+            return Session(self.token, self.user, self.created_at)
+
+        @staticmethod
+        def create(s: SessionForm):
+            return SessionModel(token=s.token, user_id=s.user.id)
+
+    return UserModel, SessionModel
 
 
-class SessionModel(instance.Model):
-    __tablename__ = "Sessions"
+# Cache for dynamically created models
+_cached = {}
 
-    token = Column(String, primary_key=True, nullable=False)
-    user_id = Column(Integer, ForeignKey("Users.id"), unique=True)
-    created_at = Column(DateTime, default=datetime.now)
 
-    user = relationship(UserModel, uselist=False, back_populates="session")
+def get_user_model():
+    from flask_authx.database.sqlalchemy.shared.instance import get_instance
 
-    def to_entity(self) -> Session:
-        return Session(self.token, self.user, self.created_at)  # type: ignore
+    db = get_instance()
+    if id(db) not in _cached:
+        _cached[id(db)] = create_models(db)
+    return _cached[id(db)][0]
 
-    @staticmethod
-    def create(s: SessionForm) -> "SessionModel":
-        return SessionModel(token=s.token, user_id=s.user.id)  # type: ignore
+
+def get_session_model():
+    from flask_authx.database.sqlalchemy.shared.instance import get_instance
+
+    db = get_instance()
+    if id(db) not in _cached:
+        _cached[id(db)] = create_models(db)
+    return _cached[id(db)][1]
+
+
+# For backward compatibility - will be replaced at runtime
+UserModel = None
+SessionModel = None
