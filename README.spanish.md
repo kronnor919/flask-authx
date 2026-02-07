@@ -236,4 +236,4 @@ def create_app():
 
 ## 📄 Licencia
 
-MIT: Libre distribución mientras que no sea comercial. Ver [LICENSE 📜](./LICENSE)
+MIT: Libre uso y distribución. Ver [LICENSE 📜](./LICENSE)
