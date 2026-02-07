@@ -6,8 +6,8 @@ from flask_authx.errors import (
     NotFoundError,
     ValidationError,
 )
-from flask_authx.database.sqlalchemy.models import SessionModel
-from flask_authx.database.sqlalchemy.shared.instance import instance
+from flask_authx.database.sqlalchemy.shared.instance import get_instance
+from flask_authx.database.sqlalchemy.models import get_session_model
 from flask_authx.database.sqlalchemy.shared.errors import (
     handle_database_error,
     handle_integrity_error,
@@ -17,21 +17,24 @@ from flask_authx.utils.result import Result
 
 
 class SQLAlchemySessionsRepository(ISessionsRepository):
+    def __init__(self) -> None:
+        super().__init__()
+        self.SessionModel = get_session_model()
+
     @handle_database_error
     def all(self) -> Result[list[Session], DatabaseError]:
-        sessions = instance.session.query(SessionModel).all()
-
+        sessions = get_instance().session.query(self.SessionModel).all()
         return Result.ok([s.to_entity() for s in sessions])
 
     @handle_database_error
     def get_by_token(
         self, token: str
     ) -> Result[Session, NotFoundError | DatabaseError]:
-        sess = instance.session.get(SessionModel, token)
-
+        sess = get_instance().session.get(self.SessionModel, token)
         if not sess:
-            return Result.fail(NotFoundError("Invalid access token"))
-
+            return Result.fail(
+                NotFoundError(f"Session with token: {token} doesn't exist.")
+            )
         return Result.ok(sess.to_entity())
 
     @handle_database_error
@@ -39,14 +42,15 @@ class SQLAlchemySessionsRepository(ISessionsRepository):
         self, user_id: int
     ) -> Result[Session, NotFoundError | DatabaseError]:
         sess = (
-            instance.session.query(SessionModel)
-            .filter(SessionModel.user_id == user_id)
-            .one_or_none()
+            get_instance()
+            .session.query(self.SessionModel)
+            .filter(self.SessionModel.user_id == user_id)
+            .first()
         )
 
         if not sess:
             return Result.fail(
-                NotFoundError(f"No session linked to user with id: {user_id}")
+                NotFoundError(f"Session for user with id: {user_id} doesn't exist.")
             )
 
         return Result.ok(sess.to_entity())
@@ -56,23 +60,20 @@ class SQLAlchemySessionsRepository(ISessionsRepository):
     def add(
         self, new: SessionForm
     ) -> Result[Session, ConflictError | ValidationError | DatabaseError]:
-        model = SessionModel.create(new)
-
-        instance.session.add(model)
-        instance.session.commit()
-
+        model = self.SessionModel.create(new)
+        get_instance().session.add(model)
+        get_instance().session.commit()
         return Result.ok(model.to_entity())
 
     @handle_database_error
     def remove(self, token: str) -> Result[None, NotFoundError | DatabaseError]:
-        model = instance.session.get(SessionModel, token)
-
+        model = get_instance().session.get(self.SessionModel, token)
         if not model:
-            return Result.fail(NotFoundError("Invalid session token."))
-
-        instance.session.delete(model)
-        instance.session.commit()
-
+            return Result.fail(
+                NotFoundError(f"Session with token: {token} doesn't exist.")
+            )
+        get_instance().session.delete(model)
+        get_instance().session.commit()
         return Result.ok(None)
 
     @handle_database_error
@@ -80,15 +81,17 @@ class SQLAlchemySessionsRepository(ISessionsRepository):
         self, user_id: int
     ) -> Result[None, NotFoundError | DatabaseError]:
         model = (
-            instance.session.query(SessionModel)
-            .filter(SessionModel.user_id == user_id)
-            .one_or_none()
+            get_instance()
+            .session.query(self.SessionModel)
+            .filter(self.SessionModel.user_id == user_id)
+            .first()
         )
 
         if not model:
-            return Result.fail(NotFoundError("User doesn't have an active session."))
+            return Result.fail(
+                NotFoundError(f"Session for user with id: {user_id} doesn't exist.")
+            )
 
-        instance.session.delete(model)
-        instance.session.commit()
-
+        get_instance().session.delete(model)
+        get_instance().session.commit()
         return Result.ok(None)
