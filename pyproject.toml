@@ -1,6 +1,6 @@
 [project]
 name = "Flask-AuthX-Extension"
-version = "0.1.1"
+version = "0.1.2"
 description = "Launch at 'MVP' speed. Built to outgrow 'MVP'."
 readme = "README.md"
 authors = [
