@@ -37,12 +37,12 @@ def create_models(db):
 
         def to_entity(self) -> User:
             return User(
-                self.id,
-                self.username,
-                self.password_hash,
-                self.role,
-                self.is_authenticated,
-                self.created_at,
+                self.id,  # pyright: ignore[reportArgumentType]
+                self.username,  # pyright: ignore[reportArgumentType]
+                self.password_hash,  # pyright: ignore[reportArgumentType]
+                self.role,  # pyright: ignore[reportArgumentType]
+                self.is_authenticated,  # pyright: ignore[reportArgumentType]
+                self.created_at,  # pyright: ignore[reportArgumentType]
             )
 
         @staticmethod
@@ -64,7 +64,7 @@ def create_models(db):
         user = relationship(UserModel, uselist=False, back_populates="session")
 
         def to_entity(self) -> Session:
-            return Session(self.token, self.user, self.created_at)
+            return Session(self.token, self.user, self.created_at)  # pyright: ignore[reportArgumentType]
 
         @staticmethod
         def create(s: SessionForm):
