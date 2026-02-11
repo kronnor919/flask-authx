@@ -44,9 +44,11 @@ class AuthService(IAuthService):
         upd_auth_res = self.users_service.mark_authenticated(user.id)
 
         if not upd_auth_res.success:
-            if not upd_auth_res.error_is(NotFoundError):
-                return Result.fail(NotFoundError(f"User with id {id} not found"))
-            return Result.fail(DatabaseError(f"Cannot update the state of the user: INFO {upd_auth_res.error.message}"))
+            return Result.fail(
+                DatabaseError(
+                    f"Cannot update the state of the user: INFO {upd_auth_res.error.message}"
+                )
+            )
 
         new_session = SessionForm(token=generate_access_token(), user=user)
         new_sess_res = self.sessions_db.add(new_session)
