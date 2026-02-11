@@ -22,6 +22,9 @@ repos:
       
       - id: ruff-format
         types_or: [python, pyi]
+
+      - id: ruff-check
+        types_or: [python, pyi]
   
   - repo: local
     hooks:
