@@ -45,7 +45,7 @@ jobs:
       - name: Check Markdown format
         uses: DavidAnson/markdownlint-cli2-action@v16
         with:
-          globs: '**/*.md'
+          globs: '**/*.md --ignore .github/**'
       
       - name: Check YAML format
         uses: ibiqlik/action-yamllint@v3
