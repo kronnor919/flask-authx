@@ -1,4 +1,4 @@
-## 🔐 Flask-AuthX
+# 🔐 Flask-AuthX
 
 Flask-AuthX proporciona un sistema completo de gestión de sesiones de usuarios, con autenticación, hashing de contraseñas, base de datos pre-configurada y crea automáticamente los endpoints listos para ser usados por un cliente. 🚀
 
