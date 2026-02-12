@@ -34,7 +34,7 @@ def builder():
     app.config["FIRST_USER_PASSWORD"] = "subliminal message"
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///:memory:"
 
-    db = SQLAlchemy(app)
+    SQLAlchemy(app)
 
     with app.app_context():
         import flask_authx.database.sqlalchemy.shared.instance as instance_module
