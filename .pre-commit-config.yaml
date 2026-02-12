@@ -23,6 +23,13 @@ repos:
       - id: ruff-format
         types_or: [python, pyi]
   
+  - repo: https://github.com/DavidAnson/markdownlint-cli2
+    rev: v0.12.1
+    hooks:
+      - id: markdownlint-cli2
+        name: markdown lint
+        args: ['--fix']
+  
   - repo: local
     hooks:
       - id: pytest
