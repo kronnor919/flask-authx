@@ -37,8 +37,8 @@ def builder():
     db = SQLAlchemy(app)
 
     with app.app_context():
-        import flask_authx.database.sqlalchemy.shared.instance as instance_module
-        from flask_authx.database.sqlalchemy.shared.instance import set_sqlalchemy
+        import flask_authx._database.sqlalchemy.shared.instance as instance_module
+        from flask_authx._database.sqlalchemy.shared.instance import set_sqlalchemy
 
         instance_module.instance = None
         set_sqlalchemy(app)

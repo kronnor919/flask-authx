@@ -1,17 +1,17 @@
-from flask_authx.entities import Session, User
-from flask_authx.forms import SessionForm, UserForm
-from flask_authx.errors import (
+from flask_authx._entities import Session, User
+from flask_authx._forms import SessionForm, UserForm
+from flask_authx._errors import (
     ConflictError,
     DatabaseError,
     InvalidCredentialsError,
     NotAuthenticatedError,
     NotFoundError,
 )
-from flask_authx.interfaces.repository import ISessionsRepository
-from flask_authx.interfaces.service import IAuthService, IUsersService
-from flask_authx.interfaces.security import IPasswordHashing
-from flask_authx.security.tokens import generate_access_token
-from flask_authx.utils.result import Result
+from flask_authx._interfaces.repository import ISessionsRepository
+from flask_authx._interfaces.service import IAuthService, IUsersService
+from flask_authx._interfaces.security import IPasswordHashing
+from flask_authx._security.tokens import generate_access_token
+from flask_authx._utils.result import Result
 
 
 class AuthService(IAuthService):

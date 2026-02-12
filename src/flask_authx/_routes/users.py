@@ -1,20 +1,20 @@
 from typing import Optional
 from flask import Blueprint, Flask, url_for
 
-from flask_authx.entities import User
-from flask_authx.forms import UserForm
-from flask_authx.role import Role
-from flask_authx.errors import (
+from flask_authx._entities import User
+from flask_authx._forms import UserForm
+from flask_authx._role import Role
+from flask_authx._errors import (
     ConflictError,
     DatabaseError,
     NotFoundError,
     ValidationError,
 )
-from flask_authx.interfaces.repository import ISessionsRepository
-from flask_authx.interfaces.service import IUsersService
-from flask_authx.security.auth import require_authentication
-from flask_authx.utils.request import json_fields
-from flask_authx.utils.responses import (
+from flask_authx._interfaces.repository import ISessionsRepository
+from flask_authx._interfaces.service import IUsersService
+from flask_authx._security.auth import require_authentication
+from flask_authx._utils.request import json_fields
+from flask_authx._utils.responses import (
     BadRequestFormatResponse,
     CreatedUserResponse,
     InternalErrorResponse,

@@ -1,16 +1,16 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
-from flask_authx.errors import (
+from flask_authx._errors import (
     AppError,
     DatabaseError,
     NotFoundError,
     ConfigurationError,
 )
-from flask_authx.forms import UserForm
-from flask_authx.role import Role
-from flask_authx.interfaces.database import IDatabaseSetup
-from flask_authx.interfaces.service import IUsersService
+from flask_authx._forms import UserForm
+from flask_authx._role import Role
+from flask_authx._interfaces.database import IDatabaseSetup
+from flask_authx._interfaces.service import IUsersService
 from flask_authx.config import FIRST_USER_NAME, FIRST_USER_PASSWORD
 
 
@@ -23,7 +23,7 @@ class SQLAlchemyDatabaseSetup(IDatabaseSetup):
     def init(self) -> None:
         with self.app.app_context():
             # Import and create models dynamically for this SQLAlchemy instance
-            from flask_authx.database.sqlalchemy.models import (
+            from flask_authx._database.sqlalchemy.models import (
                 get_user_model,
                 get_session_model,
             )

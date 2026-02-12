@@ -1,20 +1,20 @@
 from typing import Optional
 from flask import Flask
 
-from flask_authx.database.sqlalchemy.shared.instance import (
+from flask_authx._database.sqlalchemy.shared.instance import (
     set_sqlalchemy,
 )
-from flask_authx.errors import ProgrammingError
-from flask_authx.interfaces.database import IDatabaseSetup
-from flask_authx.interfaces.repository import ISessionsRepository, IUsersRepository
-from flask_authx.interfaces.security import IPasswordHashing
-from flask_authx.interfaces.service import IAuthService
-from flask_authx.routes.users import UsersRoutes
-from flask_authx.routes.auth import AuthRoutes
-from flask_authx.services.password_hashing import BcryptPasswordHashing
-from flask_authx.services.auth import AuthService
+from flask_authx._errors import ProgrammingError
+from flask_authx._interfaces.database import IDatabaseSetup
+from flask_authx._interfaces.repository import ISessionsRepository, IUsersRepository
+from flask_authx._interfaces.security import IPasswordHashing
+from flask_authx._interfaces.service import IAuthService
+from flask_authx._routes.users import UsersRoutes
+from flask_authx._routes.auth import AuthRoutes
+from flask_authx._services.password_hashing import BcryptPasswordHashing
+from flask_authx._services.auth import AuthService
 from flask_authx.config import load_config
-from flask_authx.services.users import IUsersService, UsersService
+from flask_authx._services.users import IUsersService, UsersService
 
 
 class AuthX:
@@ -56,13 +56,13 @@ class AuthX:
         ):
             set_sqlalchemy(app)
 
-            from flask_authx.database.sqlalchemy.repositories.session import (
+            from flask_authx._database.sqlalchemy.repositories.session import (
                 SQLAlchemySessionsRepository,
             )
-            from flask_authx.database.sqlalchemy.repositories.users import (
+            from flask_authx._database.sqlalchemy.repositories.users import (
                 SQLAlchemyUsersRepository,
             )
-            from flask_authx.database.sqlalchemy.setup import SQLAlchemyDatabaseSetup
+            from flask_authx._database.sqlalchemy.setup import SQLAlchemyDatabaseSetup
 
             self.users_repository = SQLAlchemyUsersRepository()
             self.users_service = self.users_service or UsersService(

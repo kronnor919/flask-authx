@@ -1,7 +1,7 @@
 from functools import wraps
 from flask import request
 
-from flask_authx.utils.responses import (
+from flask_authx._utils.responses import (
     MissingJsonFieldsResponse,
     JSONRequiredResponse,
     MissingQueryParamsResponse,

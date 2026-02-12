@@ -1,15 +1,15 @@
 from abc import ABC, abstractmethod
 from typing import Any
 
-from flask_authx.entities import Session, User
-from flask_authx.forms import SessionForm, UserForm, UserUpdateData
-from flask_authx.errors import (
+from flask_authx._entities import Session, User
+from flask_authx._forms import SessionForm, UserForm, UserUpdateData
+from flask_authx._errors import (
     ConflictError,
     DatabaseError,
     NotFoundError,
     ValidationError,
 )
-from flask_authx.utils.result import Result
+from flask_authx._utils.result import Result
 
 
 class IUsersRepository(ABC):
