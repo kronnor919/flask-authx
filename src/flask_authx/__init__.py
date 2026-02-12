@@ -1,3 +1,32 @@
+"""
+Flask-AuthX provides a complete user session management system, with authentication, password hashing,
+a pre-configured database, and automatically creates ready-to-use endpoints for any client.
+
+## Basic usage
+
+```py
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+from flask_authx import AuthXBuilder
+
+def create_app() -> Flask:
+    app = Flask(__name__)
+
+    app.config.from_mapping({
+        "SQLALCHEMY_DATABASE_URI": "sqlite:///:memory:",
+        "FIRST_USER_NAME": "kronnor",
+        "FIRST_USER_PASSWORD": "73336463"
+    })
+    # You could also load configuration from an environment file (.env)
+
+    SQLAlchemy(app) # Required by flask-authx by default
+
+    AuthXBuilder(app).build()
+
+    return app
+```
+"""
+
 from flask_authx._extension import AuthX as AuthX
 from flask_authx._extension import AuthXBuilder as AuthXBuilder
 from flask_authx._interfaces.database import IDatabaseSetup as IDatabaseSetup
