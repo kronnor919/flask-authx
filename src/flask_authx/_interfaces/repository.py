@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from typing import Any
 
 from flask_authx._entities import Session, User
 from flask_authx._forms import SessionForm, UserForm, UserUpdateData

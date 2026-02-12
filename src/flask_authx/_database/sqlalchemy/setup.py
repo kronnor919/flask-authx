@@ -5,7 +5,6 @@ from flask_authx._errors import (
     AppError,
     DatabaseError,
     NotFoundError,
-    ConfigurationError,
 )
 from flask_authx._forms import UserForm
 from flask_authx._role import Role
