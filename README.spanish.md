@@ -50,7 +50,7 @@ Si intentas correr el servidor mediante `flask run` verás que funciona sin prob
 
 Si tumbas el servidor (`Ctrl + C`) y ejecutas `flask routes` verás que la salida será algo como:
 
-```
+```text
 Endpoint               Methods  Rule                    
 ---------------------  -------  ------------------------
 auth.login             POST     /auth/login             
