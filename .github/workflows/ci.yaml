@@ -61,7 +61,7 @@ jobs:
       
       - name: Check TOML format
         run: |
-          uv pip install taplo
+          uv tool install taplo
           taplo check
       
       - name: Cache uv
