@@ -1,9 +1,9 @@
 from abc import ABC, abstractmethod
 
-from flask_authx.entities import Session, User
-from flask_authx.role import Role
-from flask_authx.forms import UserForm
-from flask_authx.errors import (
+from flask_authx._entities import Session, User
+from flask_authx._role import Role
+from flask_authx._forms import UserForm
+from flask_authx._errors import (
     ConflictError,
     InvalidCredentialsError,
     NotAuthenticatedError,
@@ -11,7 +11,7 @@ from flask_authx.errors import (
     NotFoundError,
     ValidationError,
 )
-from flask_authx.utils.result import Result
+from flask_authx._utils.result import Result
 
 
 class IAuthService(ABC):

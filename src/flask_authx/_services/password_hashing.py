@@ -1,6 +1,6 @@
 import bcrypt
 
-from flask_authx.interfaces.security import IPasswordHashing
+from flask_authx._interfaces.security import IPasswordHashing
 
 
 class BcryptPasswordHashing(IPasswordHashing):

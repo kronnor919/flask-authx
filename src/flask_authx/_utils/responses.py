@@ -3,7 +3,7 @@ from typing import Optional
 
 from flask import make_response
 
-from flask_authx.entities import Session, User
+from flask_authx._entities import Session, User
 
 
 class UserNotFoundResponse:

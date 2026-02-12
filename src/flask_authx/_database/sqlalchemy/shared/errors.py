@@ -1,12 +1,12 @@
 import sqlalchemy.exc as sae
 
-from flask_authx.errors import (
+from flask_authx._errors import (
     ProgrammingError,
     DatabaseError,
     ConflictError,
     ValidationError,
 )
-from flask_authx.utils.result import Result
+from flask_authx._utils.result import Result
 from .instance import instance
 
 

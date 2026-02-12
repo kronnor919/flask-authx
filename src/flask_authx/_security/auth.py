@@ -1,9 +1,9 @@
 from functools import wraps
 from flask import request
 
-from flask_authx.errors import DatabaseError, NotFoundError
-from flask_authx.interfaces.repository import ISessionsRepository
-from flask_authx.utils.responses import (
+from flask_authx._errors import DatabaseError, NotFoundError
+from flask_authx._interfaces.repository import ISessionsRepository
+from flask_authx._utils.responses import (
     InternalErrorResponse,
     RequireAuthenticationResponse,
 )

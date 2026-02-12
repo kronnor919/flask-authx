@@ -10,9 +10,9 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import relationship
 
-from flask_authx.entities import Session, User
-from flask_authx.forms import SessionForm, UserForm
-from flask_authx.role import Role
+from flask_authx._entities import Session, User
+from flask_authx._forms import SessionForm, UserForm
+from flask_authx._role import Role
 
 
 def create_models(db):
@@ -78,7 +78,7 @@ _cached = {}
 
 
 def get_user_model():
-    from flask_authx.database.sqlalchemy.shared.instance import get_instance
+    from flask_authx._database.sqlalchemy.shared.instance import get_instance
 
     db = get_instance()
     if id(db) not in _cached:
@@ -87,7 +87,7 @@ def get_user_model():
 
 
 def get_session_model():
-    from flask_authx.database.sqlalchemy.shared.instance import get_instance
+    from flask_authx._database.sqlalchemy.shared.instance import get_instance
 
     db = get_instance()
     if id(db) not in _cached:

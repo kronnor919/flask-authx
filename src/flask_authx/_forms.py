@@ -1,10 +1,10 @@
 from dataclasses import dataclass
 from typing import TypedDict
 
-from flask_authx.entities import User
-from flask_authx.errors import ValidationError
-from flask_authx.role import Role
-from flask_authx.utils.result import Result
+from flask_authx._entities import User
+from flask_authx._errors import ValidationError
+from flask_authx._role import Role
+from flask_authx._utils.result import Result
 
 
 @dataclass(frozen=True)

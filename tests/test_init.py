@@ -12,10 +12,10 @@ from flask_authx import (
     IDatabaseSetup,
     IPasswordHashing,
 )
-from flask_authx.interfaces.service import IUsersService
-from flask_authx.errors import ProgrammingError, ConfigurationError
+from flask_authx._interfaces.service import IUsersService
+from flask_authx._errors import ProgrammingError, ConfigurationError
 from flask_authx import config
-from flask_authx.database.sqlalchemy.shared.instance import (
+from flask_authx._database.sqlalchemy.shared.instance import (
     ensure_sqlalchemy,
     set_sqlalchemy,
     get_instance,

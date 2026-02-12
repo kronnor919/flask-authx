@@ -1,16 +1,16 @@
-from flask_authx.entities import User
-from flask_authx.errors import (
+from flask_authx._entities import User
+from flask_authx._errors import (
     ConflictError,
     DatabaseError,
     NotFoundError,
     ValidationError,
 )
-from flask_authx.forms import UserForm, UserUpdateData
-from flask_authx.interfaces.service import IUsersService
-from flask_authx.interfaces.repository import IUsersRepository
-from flask_authx.interfaces.security import IPasswordHashing
-from flask_authx.role import Role
-from flask_authx.utils.result import Result
+from flask_authx._forms import UserForm, UserUpdateData
+from flask_authx._interfaces.service import IUsersService
+from flask_authx._interfaces.repository import IUsersRepository
+from flask_authx._interfaces.security import IPasswordHashing
+from flask_authx._role import Role
+from flask_authx._utils.result import Result
 
 
 class UsersService(IUsersService):

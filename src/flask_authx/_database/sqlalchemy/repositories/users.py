@@ -1,19 +1,19 @@
-from flask_authx.entities import User
-from flask_authx.forms import UserForm, UserUpdateData
-from flask_authx.errors import (
+from flask_authx._entities import User
+from flask_authx._forms import UserForm, UserUpdateData
+from flask_authx._errors import (
     DatabaseError,
     NotFoundError,
     ConflictError,
     ValidationError,
 )
-from flask_authx.database.sqlalchemy.shared.instance import get_instance
-from flask_authx.database.sqlalchemy.models import get_user_model
-from flask_authx.database.sqlalchemy.shared.errors import (
+from flask_authx._database.sqlalchemy.shared.instance import get_instance
+from flask_authx._database.sqlalchemy.models import get_user_model
+from flask_authx._database.sqlalchemy.shared.errors import (
     handle_database_error,
     handle_integrity_error,
 )
-from flask_authx.interfaces.repository import IUsersRepository
-from flask_authx.utils.result import Result
+from flask_authx._interfaces.repository import IUsersRepository
+from flask_authx._utils.result import Result
 
 
 class SQLAlchemyUsersRepository(IUsersRepository):

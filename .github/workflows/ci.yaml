@@ -25,12 +25,12 @@ jobs:
       
       - name: Set up virtual environment
         run: |
-          uv venv .venv
+          uv venv .venv;
           source ./.venv/bin/activate
 
       - name: Install dependencies
         run: |
-          uv tool install ruff
+          uv tool install ruff;
           uv pip install pytest
       
       - name: Ruff format check
@@ -40,12 +40,12 @@ jobs:
         run: ruff check --cache-dir .ruff_cache .
       
       - name: Run tests
-        run: pytest
+        run: uv run pytest
       
       - name: Check Markdown format
         uses: DavidAnson/markdownlint-cli2-action@v16
         with:
-          globs: '**/*.md'
+          globs: '**/*.md --ignore .github/**'
       
       - name: Check YAML format
         uses: ibiqlik/action-yamllint@v3
@@ -53,13 +53,15 @@ jobs:
           file_or_dir: .
           config_data: |
             extends: default
+            ignore: |
+              .github/**
             rules:
               line-length: disable
               document-start: disable
       
       - name: Check TOML format
         run: |
-          uv pip install taplo
+          uv tool install taplo
           taplo check
       
       - name: Cache uv

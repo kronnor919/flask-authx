@@ -1,9 +1,9 @@
 from dataclasses import dataclass
 from datetime import datetime
 
-from flask_authx.errors import ValidationError
-from flask_authx.role import Role
-from flask_authx.utils.result import Result
+from flask_authx._errors import ValidationError
+from flask_authx._role import Role
+from flask_authx._utils.result import Result
 
 
 @dataclass
