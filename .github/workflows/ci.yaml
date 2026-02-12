@@ -2,7 +2,12 @@ name: CI
 
 on:
   pull_request:
-    branches: [ main, develop ]
+    branches: [ main, dev ]
+  
+  push:
+    branches: [ main, dev ]
+  
+  workflow_dispatch:
 
 jobs:
   quality:
@@ -18,8 +23,15 @@ jobs:
       - name: Set up Python
         run: uv python install 3.12
       
+      - name: Set up virtual environment
+        run: |
+          uv venv .venv
+          source ./.venv/bin/activate
+
       - name: Install dependencies
-        run: uv pip install ruff pytest
+        run: |
+          uv tool install ruff
+          uv pip install pytest
       
       - name: Ruff format check
         run: ruff format --check .
