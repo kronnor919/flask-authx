@@ -67,7 +67,7 @@ users.post             POST     /users
 
 This means our extension has indeed extended your Flask app with new functionality. ✅
 
-Even if you restart the server and go to the following URL in your browser: http://localhost:5000/users, you should see a Werkzeug debugger page showing:
+Even if you restart the server and go to the following URL in your browser: `http://localhost:5000/users`, you should see a Werkzeug debugger page showing:
 
 ```json
 {
