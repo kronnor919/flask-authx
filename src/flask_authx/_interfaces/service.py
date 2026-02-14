@@ -79,3 +79,25 @@ class IUsersService(ABC):
     @abstractmethod
     def is_authenticated(self, id: int) -> Result[bool, NotFoundError | DatabaseError]:
         pass
+
+
+class ILoggerService(ABC):
+    @abstractmethod
+    def debug(self, message: str) -> str:
+        pass
+    
+    @abstractmethod
+    def info(self, message: str) -> str:
+        pass
+    
+    @abstractmethod
+    def warn(self, message: str) -> str:
+        pass
+    
+    @abstractmethod
+    def error(self, message: str) -> str:
+        pass
+    
+    @abstractmethod
+    def fatal(self, message: str) -> str:
+        pass
