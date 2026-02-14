@@ -8,13 +8,13 @@ from flask_authx._errors import ProgrammingError
 from flask_authx._interfaces.database import IDatabaseSetup
 from flask_authx._interfaces.repository import ISessionsRepository, IUsersRepository
 from flask_authx._interfaces.security import IPasswordHashing
-from flask_authx._interfaces.service import IAuthService
+from flask_authx._interfaces.service import IAuthService, IUsersService
 from flask_authx._routes.users import UsersRoutes
 from flask_authx._routes.auth import AuthRoutes
 from flask_authx._services.password_hashing import BcryptPasswordHashing
 from flask_authx._services.auth import AuthService
 from flask_authx.config import load_config
-from flask_authx._services.users import IUsersService, UsersService
+from flask_authx._services.users import UsersService
 
 
 class AuthX:
