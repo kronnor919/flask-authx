@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import Optional
 from flask import Flask
 
@@ -8,13 +9,14 @@ from flask_authx._errors import ProgrammingError
 from flask_authx._interfaces.database import IDatabaseSetup
 from flask_authx._interfaces.repository import ISessionsRepository, IUsersRepository
 from flask_authx._interfaces.security import IPasswordHashing
-from flask_authx._interfaces.service import IAuthService, IUsersService
+from flask_authx._interfaces.service import IAuthService, IUsersService, ILoggerService
 from flask_authx._routes.users import UsersRoutes
 from flask_authx._routes.auth import AuthRoutes
 from flask_authx._services.password_hashing import BcryptPasswordHashing
 from flask_authx._services.auth import AuthService
-from flask_authx.config import load_config
 from flask_authx._services.users import UsersService
+from flask_authx._services.loggers import LocalFileLoggerService
+from flask_authx.config import load_config
 
 
 class AuthX:
@@ -31,6 +33,7 @@ class AuthX:
         self.users_routes_prefix = builder.users_routes_prefix
         self.password_hashing = builder.password_hashing
         self.users_service = builder.users_service
+        self.logger_service = builder.logger_service
 
         if self.app:
             self.init_app(self.app)
@@ -48,6 +51,12 @@ class AuthX:
         load_config(app.config)
 
         self.password_hashing = self.password_hashing or BcryptPasswordHashing()
+
+        default_logger_file = Path("~", ".flask-authx-logs", "logs.log").expanduser()
+        default_logger_file.parent.mkdir(exist_ok=True, parents=True)
+        self.logger_service = self.logger_service or LocalFileLoggerService(
+            str(default_logger_file)
+        )
 
         if (
             not self.database_setup
@@ -108,6 +117,7 @@ class AuthXBuilder:
         self.auth_service: Optional[IAuthService] = None
         self.password_hashing: Optional[IPasswordHashing] = None
         self.users_service: Optional[IUsersService] = None
+        self.logger_service: Optional[ILoggerService] = None
 
     def set_users_repository(self, repository: IUsersRepository):
         self.users_repository = repository
@@ -143,6 +153,10 @@ class AuthXBuilder:
 
     def set_users_service(self, component: IUsersService):
         self.users_service = component
+        return self
+
+    def set_logger_service(self, logger: ILoggerService):
+        self.logger_service = logger
         return self
 
     def build(self) -> AuthX:
