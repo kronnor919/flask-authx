@@ -14,16 +14,20 @@ class LocalFileLoggerService(ILoggerService):
         except FileNotFoundError:
             raise FileNotFoundError("Some parent folders doesn't exist.")
 
-        self._logger_name = "local-file-logger"
-        self._logger = logging.getLogger(self._logger_name)
         self._formatter = logging.Formatter(
-            "[%(levelname)s] %(message)s. At %(asctime)s", "%d-%m-%Y %H:%M:%S"
+            "[%(levelname)s] - %(asctime)s - %(message)s", "%d-%m-%Y %H:%M:%S"
         )
+
         self._handler = logging.handlers.TimedRotatingFileHandler(
             self._filepath, "midnight", 1, 7, "utf-8"
         )
         self._handler.setLevel(logging.DEBUG)
         self._handler.setFormatter(self._formatter)
+
+        self._logger_name = "local-file-logger"
+        self._logger = logging.getLogger(self._logger_name)
+        self._logger.setLevel(logging.DEBUG)
+        self._logger.addHandler(self._handler)
 
     def debug(self, message: str) -> str:
         self._logger.debug(message)
